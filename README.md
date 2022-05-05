@@ -1,3 +1,3 @@
 WORDLE VERSUS
 
-Committer's Names: Ralukake Tshililo
+Committer's Names: Ralukake Tshililo, Thendo Rabali
