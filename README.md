@@ -5,4 +5,5 @@ WordleVersus
 Ralukake Tshililo\
 Thendo Rabali\
 Sphumelele Sijadu\
-John Ratcliffe
+John Ratcliffe\
+Lethiwe Mchunu
