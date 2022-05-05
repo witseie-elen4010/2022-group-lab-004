@@ -1,3 +1,8 @@
-WORDLE VERSUS
+# App Name:
+WordleVersus
 
-Committer's Names: Ralukake Tshililo, Thendo Rabali, Sphumelele Sijadu 
+# Group Members: 
+Ralukake Tshililo\
+Thendo Rabali\
+Sphumelele Sijadu\
+John Ratcliffe
