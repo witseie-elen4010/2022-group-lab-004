@@ -11,10 +11,8 @@ const boxGrid = [
   ['', '', '', '', '']
 ]
 
-let currentGridRow = 0
+const currentGridRow = 0
 let currentBox = 0
-
-const solutionWord = ''
 
 boxGrid.forEach((gridRow, gridRowIndex) => {
   const rowElement = document.createElement('div')
@@ -51,19 +49,6 @@ const submitWord = () => {
       throw Error()
     }
     console.log('Guessed Word is Valid')
-    if (currentBox > 4) {
-      if (solutionWord === guessedWord) {
-        console.log('You won')
-      } else {
-        if (currentGridRow >= 5) {
-          console.log('You Lost')
-        }
-        if (currentGridRow < 5) {
-          currentGridRow++
-          currentBox = 0
-        }
-      }
-    }
   }).catch(() => {
     window.alert('Guessed Word is not in a dictioanary')
   })

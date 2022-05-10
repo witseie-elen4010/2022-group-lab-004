@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use('/cdn', express.static('Public'))
 
 app.get('/', function (request, response) {
-  response.sendFile(path.join(__dirname, 'Views', 'index.html'))
+  response.sendFile(path.join(__dirname, 'Views', 'singleplayer.html'))
 })
 
 const port = process.env.PORT || 3000
