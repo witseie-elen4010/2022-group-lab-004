@@ -1,0 +1,40 @@
+* {
+   color: white;
+   font-family:'Times New Roman', Times, serif
+}
+
+body {
+    background-color: black;
+}
+.game-container{
+    height: 85vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.GameName-container{
+    text-align: center;
+    width: 500px;
+    border-bottom: solid 1px #3a3a3c;
+}
+.BoxGrid-container{
+    width: 350px;
+    margin-bottom: 40px;
+}
+
+.BoxGrid-container div{
+    display: flex;
+}
+
+.BoxGrid-container .box {
+    width: 66px;
+    height: 66px;
+    border: 2px solid #3a3a3c;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 2px;
+}
