@@ -1,4 +1,4 @@
 const button = document.getElementById('singlePlayerMode')
 button.addEventListener('click', function () {
-  location = "http://localhost:3000/singleplayer"
+  location = String(location).replace("modeoption", "singleplayer")
 }, false)
