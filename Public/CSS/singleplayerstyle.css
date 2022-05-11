@@ -4,7 +4,7 @@
 }
 
 body {
-    background-color: black;
+    background-color: rgb(216, 212, 212);
 }
 .game-container{
     height: 85vh;
@@ -20,6 +20,8 @@ body {
     border-bottom: solid 1px #3a3a3c;
 }
 .BoxGrid-container{
+    position: relative; 
+    top:-200px;
     width: 350px;
     margin-bottom: 40px;
 }
