@@ -1,4 +1,4 @@
-.keyboard{
+.board{
     position: fixed;
     left:0px;
     bottom:0;
@@ -11,14 +11,11 @@
     height: 200px;
 }
 
-.keyboard--hidden{
- bottom: -100%;
-}
 
-.keyboard_keys{
+.keys{
     text-align: center;
 }
-.keyboard_key{
+.key{
     height: 45px;
     width: 6%;
     max-width: 90px;
@@ -40,9 +37,9 @@
 
 }
 
-.keyboard_key:active{
+.key:active{
     background: rgba(54, 54, 54, 0.12); 
 }
-.keyboard_key--wide{
+.key--wide{
    width: 12%;
 }
