@@ -123,27 +123,28 @@ const deleteLetter = () => {
 }
 
 const Keyboard = {
-  elements: {
-    main: null,
+  properties: {
+    board: null,
     keysContainer: null,
     keys: []
   },
 
-  init () {
-    this.elements.main = document.createElement('div')
-    this.elements.keysContainer = document.createElement('div')
+  setup () {
+    this.properties.board = document.createElement('div')
+    this.properties.keysContainer = document.createElement('div')
 
-    this.elements.main.classList.add('keyboard')
-    this.elements.keysContainer.classList.add('keyboard_keys')
-    this.elements.keysContainer.appendChild(this._createKeys())
+    this.properties.board.classList.add('board')
+    this.properties.keysContainer.classList.add('keys')
+    this.properties.keysContainer.appendChild(this._returnKeys())
 
-    this.elements.keys = this.elements.keysContainer.querySelectorAll('.keyboard_key')
+    this.properties.keys = this.properties.keysContainer.querySelectorAll('.key')
 
-    this.elements.main.appendChild(this.elements.keysContainer)
-    document.body.appendChild(this.elements.main)
+    this.properties.board.appendChild(this.properties.keysContainer)
+    const gameContainer = document.querySelector('.game-container')
+    gameContainer.appendChild(this.properties.board)
   },
 
-  _createKeys () {
+  _returnKeys () {
     const fragment = document.createDocumentFragment()
     const keyLayout = [
       'Q', 'W', 'E', 'T', 'Y', 'U', 'I', 'O', 'P', 'backspace',
@@ -151,23 +152,23 @@ const Keyboard = {
       'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'enter'
     ]
 
-    const createIconHTML = (iconName) => {
+    const HTMLicon = (iconName) => {
       return `<i class="material-icons">${iconName}</i>`
     }
 
     keyLayout.forEach(key => {
-      const keyElement = document.createElement('button')
+      const element = document.createElement('button')
       const insertLineBreak = ['backspace', 'L'].indexOf(key) !== -1
 
-      keyElement.setAttribute('type', 'button')
-      keyElement.classList.add('keyboard_key')
+      element.setAttribute('type', 'button')
+      element.classList.add('key')
 
       switch (key) {
         case 'backspace':
-          keyElement.classList.add('keyboard_key--wide')
-          keyElement.innerHTML = createIconHTML('backspace')
-
-          keyElement.addEventListener('click', () => {
+          element.classList.add('key--wide')
+          element.innerHTML = HTMLicon('backspace')
+          
+          element.addEventListener('click', () => {
             if (currentBox > 0 && !isGameOver) {
               deleteLetter()
             }
@@ -175,10 +176,10 @@ const Keyboard = {
           break
 
         case 'enter':
-          keyElement.classList.add('keyboard_key--wide')
-          keyElement.innerHTML = createIconHTML('keyboard_return')
+          element.classList.add('key--wide')
+          element.innerHTML = HTMLicon('keyboard_return')
 
-          keyElement.addEventListener('click', () => {
+          element.addEventListener('click', () => {
             if (!isGameOver) {
               SubmitGuessedWord()
             }
@@ -186,15 +187,15 @@ const Keyboard = {
           break
 
         default:
-          keyElement.textContent = key
-          keyElement.addEventListener('click', () => {
+          element.textContent = key
+          element.addEventListener('click', () => {
             insertLetter(key)
           })
 
           break
       }
 
-      fragment.appendChild(keyElement)
+      fragment.appendChild(element)
 
       if (insertLineBreak) {
         fragment.appendChild(document.createElement('br'))
@@ -207,5 +208,5 @@ const Keyboard = {
 }
 
 window.addEventListener('DOMContentLoaded', function () {
-  Keyboard.init()
+  Keyboard.setup()
 })
