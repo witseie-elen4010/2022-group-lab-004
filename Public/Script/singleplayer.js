@@ -59,6 +59,13 @@ const submitWord = () => {
     }
 
     fetch('/api', options)
+      .then(response => response.json())
+      .then(data => {
+        console.log(data.guessedWord)
+      })
+      .catch((error) => {
+        console.error('Error:', error)
+      })
     currentBox = 0
     currentGridRow++
   }).catch(() => {

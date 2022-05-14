@@ -23,6 +23,9 @@ app.get('/singleplayer', function (request, response) {
 app.post('/api', (req, res) => {
   const guessedWord = req.body.guessedWord
   console.log(guessedWord)
+  res.json({
+    guessedWord
+  })
 })
 const port = process.env.PORT || 3000
 app.listen(port)
