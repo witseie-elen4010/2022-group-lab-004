@@ -1,4 +1,4 @@
 const button = document.getElementById('singlePlayerMode')
 button.addEventListener('click', function () {
-  location = "hostlobby"
+  location = String(location).replace("modeoption", "hostlobby")
 }, false)
