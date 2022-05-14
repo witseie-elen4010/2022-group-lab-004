@@ -48,7 +48,17 @@ const submitWord = () => {
     if (!res.ok) {
       throw Error()
     }
-    console.log('Guessed Word is Valid')
+    const data = { guessedWord }
+
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    }
+
+    fetch('/api', options)
     currentBox = 0
     currentGridRow++
   }).catch(() => {

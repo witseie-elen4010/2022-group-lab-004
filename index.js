@@ -20,6 +20,10 @@ app.get('/singleplayer', function (request, response) {
   response.sendFile(path.join(__dirname, 'Views', 'singleplayer.html'))
 })
 
+app.post('/api', (req, res) => {
+  const guessedWord = req.body.guessedWord
+  console.log(guessedWord)
+})
 const port = process.env.PORT || 3000
 app.listen(port)
 console.log('Express server running on port', port)
