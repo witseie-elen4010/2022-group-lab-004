@@ -61,7 +61,7 @@ const submitWord = () => {
     fetch('/api', options)
       .then(response => response.json())
       .then(data => {
-        console.log(data.guessedWord)
+        console.log(data)
       })
       .catch((error) => {
         console.error('Error:', error)
