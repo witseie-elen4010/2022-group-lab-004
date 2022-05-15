@@ -51,6 +51,7 @@ const submitWord = () => {
     console.log('Guessed Word is Valid')
     currentBox = 0
     currentGridRow++
+    Score.incrementScore()
   }).catch(() => {
     window.alert('Guessed Word is not in a dictioanary')
   })
@@ -65,6 +66,25 @@ const deleteLetter = () => {
   box.textContent = ''
   boxGrid[currentGridRow][currentBox] = ''
   box.setAttribute('data', '')
+}
+
+const Score = {
+  value: {
+    score: 0,
+    display: null
+  },
+
+  incrementScore () {
+    this.value.score += 10
+  },
+
+  decrementScore () {
+    this.value.score -= 10
+  },
+
+  getScore () {
+    return this.value.score
+  }
 }
 
 const Keyboard = {
