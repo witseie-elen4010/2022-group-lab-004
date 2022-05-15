@@ -6,7 +6,9 @@ const app = express()
 
 const homeRoute = require('./Routes/homeRoute')
 const modeRoute = require('./Routes/modeRoute')
+
 const mod = require('./WordList.js')
+const lobbyRoute = require('./Routes/lobbyRoute')
 
 const bodyParser = require('body-parser')
 
@@ -18,6 +20,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use('/cdn', express.static('Public'))
 app.use('/', homeRoute)
 app.use('/', modeRoute)
+app.use('/', lobbyRoute)
 
 app.get('/singleplayer', function (request, response) {
   mod.RandomSolutionWord()
