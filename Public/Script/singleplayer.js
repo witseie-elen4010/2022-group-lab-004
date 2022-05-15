@@ -78,6 +78,8 @@ const GuessedWordValidation = (guessedWord) => {
     }
 
     WordEvaluation(guessedWord)
+    
+    Score.incrementScore()
   }).catch(() => {
     window.alert('word not in a dictioanary')
   })
@@ -120,6 +122,25 @@ const deleteLetter = () => {
   box.textContent = ''
   boxGrid[currentGridRow][currentBox] = ''
   box.setAttribute('data', '')
+}
+
+const Score = {
+  value: {
+    score: 0,
+    display: null
+  },
+
+  incrementScore () {
+    this.value.score += 10
+  },
+
+  decrementScore () {
+    this.value.score -= 10
+  },
+
+  getScore () {
+    return this.value.score
+  }
 }
 
 const Keyboard = {
