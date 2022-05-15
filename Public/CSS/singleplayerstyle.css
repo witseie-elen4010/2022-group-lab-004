@@ -1,5 +1,5 @@
 * {
-   color: white;
+   color: black;
    font-family:'Times New Roman', Times, serif
 }
 
@@ -20,10 +20,8 @@ body {
     border-bottom: solid 1px #3a3a3c;
 }
 .BoxGrid-container{
-    position: relative; 
-    top:-200px;
-    width: 350px;
-    margin-bottom: 40px;
+    width: 295px;
+    margin-bottom: 150px;
 }
 
 .BoxGrid-container div{
@@ -31,8 +29,8 @@ body {
 }
 
 .BoxGrid-container .box {
-    width: 66px;
-    height: 66px;
+    width: 50px;
+    height: 50px;
     border: 2px solid #3a3a3c;
     box-sizing: border-box;
     display: flex;

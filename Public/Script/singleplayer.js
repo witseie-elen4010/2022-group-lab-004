@@ -2,6 +2,9 @@
 
 const boxGridDisplay = document.querySelector('.BoxGrid-container')
 
+let MatchingIndex = []
+let IncludedIndex = []
+
 const boxGrid = [
   ['', '', '', '', ''],
   ['', '', '', '', ''],
@@ -13,7 +16,7 @@ const boxGrid = [
 
 let currentGridRow = 0
 let currentBox = 0
-
+let isGameOver = false
 boxGrid.forEach((gridRow, gridRowIndex) => {
   const rowElement = document.createElement('div')
   rowElement.setAttribute('id', 'gridRow-' + gridRowIndex)
@@ -36,9 +39,34 @@ const insertLetter = (letter) => {
   console.log('boxGrid', boxGrid)
 }
 
-const submitWord = () => {
-  const guessedWord = boxGrid[currentGridRow].join('')
+const isCorrectGuess = () => {
+  return !MatchingIndex.includes(false)
+}
 
+const WordEvaluation = (guessedWord) => {
+  const data = { guessedWord }
+
+  const options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  }
+
+  fetch('/api', options)
+    .then(response => response.json())
+    .then(data => {
+      MatchingIndex = data.MatchingIndex
+      IncludedIndex = data.IncludedIndex
+      UpdateGamePlay()
+    })
+    .catch((error) => {
+      console.error('Error:', error)
+    })
+}
+
+const GuessedWordValidation = (guessedWord) => {
   fetch(
     `https://api.dictionaryapi.dev/api/v2/entries/en/${guessedWord}`,
     {
@@ -48,13 +76,41 @@ const submitWord = () => {
     if (!res.ok) {
       throw Error()
     }
-    console.log('Guessed Word is Valid')
-    currentBox = 0
-    currentGridRow++
+
+    WordEvaluation(guessedWord)
+    
     Score.incrementScore()
   }).catch(() => {
-    window.alert('Guessed Word is not in a dictioanary')
+    window.alert('word not in a dictioanary')
   })
+}
+
+const UpdateGamePlay = () => {
+  if (currentBox > 4) {
+    if (isCorrectGuess()) {
+      console.log('You Won')
+      isGameOver = true
+    } else {
+      if (currentGridRow >= 5) {
+        isGameOver = true
+        console.log('You Lost')
+      }
+      if (currentGridRow < 5) {
+        currentGridRow++
+        currentBox = 0
+      }
+    }
+  }
+}
+
+const SubmitGuessedWord = () => {
+  const guessedWord = boxGrid[currentGridRow].join('')
+
+  if (guessedWord.length === 5) {
+    GuessedWordValidation(guessedWord)
+  } else {
+    window.alert('Not Enough Letters')
+  }
 }
 
 const deleteLetter = () => {
@@ -132,9 +188,11 @@ const Keyboard = {
         case 'backspace':
           element.classList.add('key--wide')
           element.innerHTML = HTMLicon('backspace')
-
+          
           element.addEventListener('click', () => {
-            deleteLetter()
+            if (currentBox > 0 && !isGameOver) {
+              deleteLetter()
+            }
           })
           break
 
@@ -143,7 +201,9 @@ const Keyboard = {
           element.innerHTML = HTMLicon('keyboard_return')
 
           element.addEventListener('click', () => {
-            submitWord()
+            if (!isGameOver) {
+              SubmitGuessedWord()
+            }
           })
           break
 
