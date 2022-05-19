@@ -28,6 +28,7 @@ const pools = new mssql.ConnectionPool(config)
   .catch(err => {
     console.log('Database Connection Failed! Bad Config: ', err)
   })
+
 module.exports = {
   sql: mssql,
   pools: pools,

@@ -6,6 +6,7 @@ const app = express()
 
 const homeRoute = require('./Routes/homeRoute')
 const modeRoute = require('./Routes/modeRoute')
+const wordleAccountManager = require('./Backend/WordleaccountManagement')
 
 const mod = require('./WordList.js')
 const lobbyRoute = require('./Routes/lobbyRoute')
@@ -13,6 +14,9 @@ const lobbyRoute = require('./Routes/lobbyRoute')
 const bodyParser = require('body-parser')
 
 let solutionWord
+
+app.set('view engine', 'ejs')
+app.set('views', './Views')
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -50,6 +54,11 @@ app.post('/api', (req, res) => {
     MatchingIndex,
     IncludedIndex
   })
+})
+
+app.post('/api/register-user', (req,res) => {
+  console.log(req.body.username)
+  wordleAccountManager.addUser(req.body, req, res)
 })
 const port = process.env.PORT || 3000
 app.listen(port)
