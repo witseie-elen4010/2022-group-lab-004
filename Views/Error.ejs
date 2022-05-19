@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Error</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/cdn/CSS/registerAnderror.css">
+</head>
+<body>
+    <div class="Header">
+        <h1>WordleVS</h1>
+    </div>
+    <div class="card-container" id ="error-card-container">
+        <div class="card-box" id ="error-card-box">
+            <h2 class="card-header" id="error-card-header"> <%=error %> </h2>
+            <div class="card-message-container">
+                    <p style="text-align: center;"><%=message %></p>
+                    <ul>
+                        <% tips.forEach((tip) => { %>
+                            <li><%= tip%></li>
+                        <%}) %>
+                    </ul>
+            </div>
+            <div class="card-button-container">
+                <button class="card-button" id="error-card-button"><%= button %></button>
+            </div>
+        </div>
+    </div>
+    <script>
+        const cardButton = document.querySelector('.card-button');
+        cardButton.addEventListener('click', function(event) {
+            window.location.href = '<%= buttonlink %>';
+        })
+    </script>
+</body>
+</html>
