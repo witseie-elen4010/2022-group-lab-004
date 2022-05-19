@@ -29,6 +29,10 @@ app.get('/singleplayer', function (request, response) {
   response.sendFile(path.join(__dirname, 'Views', 'singleplayer.html'))
 })
 
+app.get('/signUp', function(req, res){
+  res.sendFile(path.join(__dirname + "/Views/Register.html"))
+})
+
 app.post('/api', (req, res) => {
   let MatchingIndex = []
   let IncludedIndex = []
