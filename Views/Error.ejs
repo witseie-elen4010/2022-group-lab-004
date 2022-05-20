@@ -10,10 +10,10 @@
     <div class="Header">
         <h1>WordleVS</h1>
     </div>
-    <div class="Card-container" id ="error-card-container">
-        <div class="card-box" id ="error-card-box">
-            <h2 class="card-header" id="error-card-header"> <%=error %> </h2>
-            <div class="card-message-container">
+    <div class="error-message-container" id ="error-container">
+        <div class="error-box" id ="error-box">
+            <h2 class="error-message-header" id="error-header"> <%=error %> </h2>
+            <div class="message">
                     <p style="text-align: center;"><%=message %></p>
                     <ul>
                         <% tips.forEach((tip) => { %>
@@ -21,13 +21,13 @@
                         <%}) %>
                     </ul>
             </div>
-            <div class="card-button-container">
-                <button class="card-button" id="error-card-button"><%= button %></button>
+            <div class="button-container">
+                <button class="error-button" id="error-page-button"><%= button %></button>
             </div>
         </div>
     </div>
     <script>
-        const cardButton = document.querySelector('.card-button');
+        const cardButton = document.querySelector('.error-button');
         cardButton.addEventListener('click', function(event) {
             window.location.href = '<%= buttonlink %>';
         })

@@ -76,31 +76,31 @@ h4{
    Styling For Error Page
 */
 
-.card-message-container {
+.message {
    flex: auto;
    justify-content: center;
    margin: 1rem;
 }
 
-.card-button-container {
+.button-container{
    display: flex;
    flex-wrap: wrap;
    justify-content: center;
    margin: 1rem;
 }
 
-.card-button {
+.error-button {
    background-color: #49c1a2;
 }
 
-.Card-container {
+.error-message-container {
    justify-content: center;
    display: flex;
    flex-wrap: wrap;
 }
 
 
-.card-box {
+.error-box {
    justify-content: center;
    margin: 1rem;
    background: white;
@@ -110,7 +110,7 @@ h4{
    transition: all .2s linear
 }
 
-.card-header {  
+.error-message-header {  
    text-align: center;
    padding: 1.5rem 2.5rem;
    background-color: #49c1a2;
