@@ -2,7 +2,7 @@ const database = require('./database_Connection')
 const wordleAccountProcess = require('./Wordleaccountprocess')
 const bcrypt = require('bcrypt');
 
-
+// Create a query message to add user Account details to the Database
 const sqlQuery = function (user) {
     // Hashing Password for security purposes. 
     const passwordHash = bcrypt.hashSync(user.password, 10);
@@ -18,14 +18,14 @@ const sqlQuery = function (user) {
     const formattedData = `VALUES ('${User.username}', '${User.email}', '${User.password}');`
     return command + formattedData
   }
-
-  async function getRegisteredUsers () {
+  // Retrive user acccounts from the database and store them in a server
+  async function retrieveRegisteredUsers () {
     try {
       const pool = await database.pools
       const users = await pool.request().query('SELECT * FROM Users')
       wordleAccountProcess.clearRegisteredUsersList()
       users.recordset.forEach(user => {
-         wordleAccountProcess.addUser(user)
+         wordleAccountProcess.StoreRegisteredUser(user)
          console.log(user)
       })
     } catch (err) {
@@ -33,10 +33,11 @@ const sqlQuery = function (user) {
     }
   }
 
+// Send appropriate Error Messages to the Error Message page
 module.exports.addUser = async function (userdetails, req, res) {
-     const user = wordleAccountProcess.createUser(userdetails)
+     const user = wordleAccountProcess.createUserObject(userdetails)
     try{   
-          await getRegisteredUsers()
+          await retrieveRegisteredUsers()
           if(!wordleAccountProcess.isUniqueUserName(user.username)){
             const message = `Username '${user.username}' Already Registered.`
             res.render('Error.ejs',
@@ -65,7 +66,7 @@ module.exports.addUser = async function (userdetails, req, res) {
             return
          }
          const pool = await database.pools
-
+        // Sends a request to create User when details satisfies the requirements
          await pool.request().query(sqlQuery(user))
          res.redirect('/signUp')
     } catch(error){

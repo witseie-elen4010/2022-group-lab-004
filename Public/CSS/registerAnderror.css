@@ -93,7 +93,7 @@ h4{
    background-color: #49c1a2;
 }
 
-.card-container {
+.Card-container {
    justify-content: center;
    display: flex;
    flex-wrap: wrap;
