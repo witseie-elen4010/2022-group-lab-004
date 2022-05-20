@@ -57,7 +57,6 @@ app.post('/api', (req, res) => {
 })
 
 app.post('/api/register-user', (req,res) => {
-  console.log(req.body.username)
   wordleAccountManager.addUser(req.body, req, res)
 })
 const port = process.env.PORT || 3000

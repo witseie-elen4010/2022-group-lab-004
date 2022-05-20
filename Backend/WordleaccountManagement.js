@@ -1,10 +1,21 @@
 const database = require('./database_Connection')
 const wordleAccountProcess = require('./Wordleaccountprocess')
+const bcrypt = require('bcrypt');
 
 
 const sqlQuery = function (user) {
+    // Hashing Password for security purposes. 
+    const passwordHash = bcrypt.hashSync(user.password, 10);
+    console.log(passwordHash)
+
+    const User = {
+      username: user.username,
+      email: user.email,
+      // Storing Hashed Password
+      password: passwordHash
+    }
     const command = 'INSERT INTO Users (username, email, password) '
-    const formattedData = `VALUES ('${user.username}', '${user.email}', '${user.password}');`
+    const formattedData = `VALUES ('${User.username}', '${User.email}', '${User.password}');`
     return command + formattedData
   }
 
@@ -15,6 +26,7 @@ const sqlQuery = function (user) {
       wordleAccountProcess.clearRegisteredUsersList()
       users.recordset.forEach(user => {
          wordleAccountProcess.addUser(user)
+         console.log(user)
       })
     } catch (err) {
       console.log(err)
@@ -42,7 +54,7 @@ module.exports.addUser = async function (userdetails, req, res) {
           if(!wordleAccountProcess.isUniqueEmail(user.email)){
             const message = `Email '${user.email}' Already Registered.`
           res.render('Error.ejs',
-        { error: 'Email Is Invalid', message: message, tips: [], link: '/signUp', buttonlabel: 'Create Account' })
+        { error: 'Email Is Invalid', message: message, tips: [], buttonlink: '/signUp', button: 'Create Account' })
             return
          }
          if(!wordleAccountProcess.isValidPassword(user.password, user.email, user.username)){
@@ -53,8 +65,9 @@ module.exports.addUser = async function (userdetails, req, res) {
             return
          }
          const pool = await database.pools
+
          await pool.request().query(sqlQuery(user))
-         res.redirect('/singleplayer')
+         res.redirect('/signUp')
     } catch(error){
         console.log(error)
     }
