@@ -3,8 +3,8 @@ const path = require('path')
 
 const router = express.Router()
 
-router.get('/', function (req, res) {
-  res.sendFile(path.join(__dirname, '../Views', 'home.html'))
+router.get('/modeoption', function (req, res) {
+  res.sendFile(path.join(__dirname, '../Views', 'modeoption.html'))
 })
 
 module.exports = router

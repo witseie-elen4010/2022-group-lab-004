@@ -1,6 +1,14 @@
 'use strict'
 
 const boxGridDisplay = document.querySelector('.BoxGrid-container')
+const wordToGuess = 'PAUSE'
+const clickedLetters = []
+
+
+let MatchingIndex = []
+let IncludedIndex = []
+let increment = 0
+
 
 const boxGrid = [
   ['', '', '', '', ''],
@@ -13,7 +21,7 @@ const boxGrid = [
 
 let currentGridRow = 0
 let currentBox = 0
-
+let isGameOver = false
 boxGrid.forEach((gridRow, gridRowIndex) => {
   const rowElement = document.createElement('div')
   rowElement.setAttribute('id', 'gridRow-' + gridRowIndex)
@@ -23,9 +31,12 @@ boxGrid.forEach((gridRow, gridRowIndex) => {
     boxElement.setAttribute('id', 'gridRow-' + gridRowIndex + '-box-' + boxIndex)
     boxElement.classList.add('box')
     rowElement.append(boxElement)
+    
   })
   boxGridDisplay.appendChild(rowElement)
 })
+
+
 
 const insertLetter = (letter) => {
   const box = document.getElementById('gridRow-' + currentGridRow + '-box-' + currentBox)
@@ -36,9 +47,36 @@ const insertLetter = (letter) => {
   console.log('boxGrid', boxGrid)
 }
 
-const submitWord = () => {
-  const guessedWord = boxGrid[currentGridRow].join('')
+const isCorrectGuess = () => {
+  return !MatchingIndex.includes(false)
+}
 
+const WordEvaluation = (guessedWord) => {
+  const data = { guessedWord }
+
+  const options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  }
+
+  fetch('/api', options)
+    .then(response => response.json())
+    .then(data => {
+      MatchingIndex = data.MatchingIndex
+      IncludedIndex = data.IncludedIndex
+      changeBox()
+      UpdateGamePlay()
+
+    })
+    .catch((error) => {
+      console.error('Error:', error)
+    })
+}
+
+const GuessedWordValidation = (guessedWord) => {
   fetch(
     `https://api.dictionaryapi.dev/api/v2/entries/en/${guessedWord}`,
     {
@@ -48,13 +86,45 @@ const submitWord = () => {
     if (!res.ok) {
       throw Error()
     }
-    console.log('Guessed Word is Valid')
-    currentBox = 0
-    currentGridRow++
+
+    WordEvaluation(guessedWord)
+    
     Score.incrementScore()
+    
   }).catch(() => {
-    window.alert('Guessed Word is not in a dictioanary')
+    window.alert('word not in a dictioanary')
   })
+}
+
+const UpdateGamePlay = () => {
+  if (currentBox > 4) {
+    if (isCorrectGuess()) {
+      console.log('You Won')
+      isGameOver = true
+    } else {
+      if (currentGridRow >= 5) {
+        console.log('You Lost')
+        isGameOver = true
+       
+      }
+      if (currentGridRow < 5) {
+        
+
+        currentGridRow++
+        currentBox = 0
+      }
+    }
+  }
+}
+
+const SubmitGuessedWord = () => {
+  const guessedWord = boxGrid[currentGridRow].join('')
+
+  if (guessedWord.length === 5) {
+    GuessedWordValidation(guessedWord)
+  } else {
+    window.alert('Not Enough Letters')
+  }
 }
 
 const deleteLetter = () => {
@@ -62,6 +132,7 @@ const deleteLetter = () => {
   if (currentBox < 0) {
     currentBox = 0
   }
+  clickedLetters.pop()
   const box = document.getElementById('gridRow-' + currentGridRow + '-box-' + currentBox)
   box.textContent = ''
   boxGrid[currentGridRow][currentBox] = ''
@@ -86,6 +157,8 @@ const Score = {
     return this.value.score
   }
 }
+
+
 
 const Keyboard = {
   properties: {
@@ -112,7 +185,7 @@ const Keyboard = {
   _returnKeys () {
     const fragment = document.createDocumentFragment()
     const keyLayout = [
-      'Q', 'W', 'E', 'T', 'Y', 'U', 'I', 'O', 'P', 'backspace',
+      'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'backspace',
       'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L',
       'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'enter'
     ]
@@ -132,9 +205,11 @@ const Keyboard = {
         case 'backspace':
           element.classList.add('key--wide')
           element.innerHTML = HTMLicon('backspace')
-
+          
           element.addEventListener('click', () => {
-            deleteLetter()
+            if (currentBox > 0 && !isGameOver) {
+              deleteLetter()
+            }
           })
           break
 
@@ -143,7 +218,9 @@ const Keyboard = {
           element.innerHTML = HTMLicon('keyboard_return')
 
           element.addEventListener('click', () => {
-            submitWord()
+            if (!isGameOver) {
+              SubmitGuessedWord()
+            }
           })
           break
 
@@ -151,6 +228,9 @@ const Keyboard = {
           element.textContent = key
           element.addEventListener('click', () => {
             insertLetter(key)
+            clickedLetters.push(element)
+            console.log('clickedLetters:' +clickedLetters)
+
           })
 
           break
@@ -171,3 +251,83 @@ const Keyboard = {
 window.addEventListener('DOMContentLoaded', function () {
   Keyboard.setup()
 })
+
+
+
+// this will add colour to the grid and the keyboard
+const changeBox = () => {
+
+  //get all the chidren of that row
+  const rowBox = document.querySelector('#gridRow-' + currentGridRow).childNodes//'#' makes sure to tell we are looking for an id
+
+  // Remove letter once it has been coloured to prevent double colouring
+
+  const guess = []
+  
+  rowBox.forEach((box,index) => {
+
+      guess.push({letter: box.getAttribute('data'), styling: 'greyColour'})
+  })
+
+    //initialisng the 5 latest clicked keys with the colour grey.
+    
+
+
+
+  guess.forEach((guess,index) => {
+      if (IncludedIndex[index] == true) {
+          guess.styling = 'yellowColour'
+
+      }
+    })
+
+  //Check if each guess is a match
+  guess.forEach((guess, index) => {
+    if (MatchingIndex[index] == true) {
+        guess.styling = 'greenColour'
+    }
+  })
+
+
+  rowBox.forEach((box, index) => {
+      setTimeout(() => {
+          box.classList.add('flip')
+          box.classList.add('greyColour')
+          if (IncludedIndex[index] == true ) {
+            box.classList.add('yellowColour')
+
+           }
+          if (MatchingIndex[index] == true) {
+          box.classList.add('greenColour')
+
+          }
+
+      }, 250 * index)
+  })
+
+  for (let ind = clickedLetters.length -5; ind< clickedLetters.length; ind++)
+  {
+
+    clickedLetters[ind].classList.add('greyColour')
+    //clickedLetters[ind].classList.remove('yellowColour')
+    //clickedLetters[ind].classList.remove('greenColour')
+
+    let remainder = ind%5 // limiting the indicies to a maximum of 5
+    if (IncludedIndex[remainder] == true ) {
+      clickedLetters[ind].classList.remove('greenColour') //removing any green so that it will not overwrite the yellow
+      clickedLetters[ind].classList.add('yellowColour')
+    } 
+    if (MatchingIndex[remainder] == true) {
+
+
+      clickedLetters[ind].classList.add('greenColour')
+
+      }
+
+  }
+  
+}
+
+
+
+

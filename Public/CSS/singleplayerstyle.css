@@ -1,5 +1,5 @@
 * {
-   color: white;
+   color: black;
    font-family:'Times New Roman', Times, serif
 }
 
@@ -20,10 +20,8 @@ body {
     border-bottom: solid 1px #3a3a3c;
 }
 .BoxGrid-container{
-    position: relative; 
-    top:-200px;
-    width: 350px;
-    margin-bottom: 40px;
+    width: 295px;
+    margin-bottom: 150px;
 }
 
 .BoxGrid-container div{
@@ -31,12 +29,61 @@ body {
 }
 
 .BoxGrid-container .box {
-    width: 66px;
-    height: 66px;
+    width: 50px;
+    height: 50px;
     border: 2px solid #3a3a3c;
     box-sizing: border-box;
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 2px;
+}
+
+
+
+/*Adding colour*/
+/*The ordder is important because if the letter is in the word then it will get
+a yellow overlay. But if its also in the correct position it will
+get a green overlay.*/
+.greyColour {
+    background-color: #3a3a3c !important; /*The background colour will overwrite anything set previously*/
+    border:none !important; /*The border is removed so we just have the green block*/
+}
+.yellowColour {
+    background-color: #b59f3a !important;
+    border:none !important;
+}
+
+.greenColour {
+    background-color: #538d4e !important;
+    border:none !important;
+}
+
+/*Win or loose message*/
+.message-container {
+    height: 30px;
+}
+
+.message-container p {  /*Styled such that only p tags that are in the messsage container have this styling*/
+    background-color: #818384;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 0;
+}
+
+/*Animation that will flip the tiles*/
+.box.flip {
+    animation: 0.5s linear flipping;
+}
+/*Essentially flipping them 90 deg and then back to give the illusion of fipping completely*/
+@keyframes flipping {
+    0% {
+        transform: rotateX(0deg);
+    }
+    50% {
+        transform: rotateX(90deg);
+    }
+    100% {
+        transform: rotateX(0deg);
+    }
 }
