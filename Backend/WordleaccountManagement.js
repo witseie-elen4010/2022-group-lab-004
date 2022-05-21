@@ -40,21 +40,21 @@ module.exports.RegisterUser = async function (userdetails, req, res) {
           if(!wordleAccountProcess.isUniqueUserName(user.username)){
             const message = `Username '${user.username}' Already Registered.`
             res.render('Error.ejs',
-              { error: 'Username Is Invalid', message: message, tips: [], buttonlink: '/signUp', button: 'Create Account' })
+              { error: 'Username Is Invalid', message: message, tips: [], buttonlink: '/', button: 'Create Account' })
             return
           }
           if (!wordleAccountProcess.isValidUserName(user.username)) {
             const message = `Username '${user.username}' cannot be used. Here are tips for username:`
             const Usernametips = ['Must have atleast 5 alphanumeric characters', 'Must not be the same with password']
             res.render('Error.ejs',
-        { error: 'Username Is Invalid', message: message, tips: Usernametips, buttonlink: '/signUp', button: 'Create Account' })
+        { error: 'Username Is Invalid', message: message, tips: Usernametips, buttonlink: '/', button: 'Create Account' })
             console.log(message)
             return 
           }
           if(!wordleAccountProcess.isUniqueEmail(user.email)){
             const message = `Email '${user.email}' Already Registered.`
           res.render('Error.ejs',
-        { error: 'Email Is Invalid', message: message, tips: [], buttonlink: '/signUp', button: 'Create Account' })
+        { error: 'Email Is Invalid', message: message, tips: [], buttonlink: '/', button: 'Create Account' })
             return
          }
          if(!wordleAccountProcess.isValidPassword(user.password, user.email, user.username)){
@@ -67,7 +67,7 @@ module.exports.RegisterUser = async function (userdetails, req, res) {
          const pool = await database.pools
         // Sends a request to create User when details satisfies the requirements
          await pool.request().query(sqlQuery(user))
-         res.redirect('/signUp')
+         res.redirect('/home')
     } catch(error){
         console.log(error)
     }
