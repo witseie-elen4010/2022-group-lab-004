@@ -6,7 +6,6 @@ const bcrypt = require('bcrypt');
 const sqlQuery = function (user) {
     // Hashing Password for security purposes. 
     const passwordHash = bcrypt.hashSync(user.password, 10);
-    console.log(passwordHash)
 
     const User = {
       username: user.username,
@@ -34,7 +33,7 @@ const sqlQuery = function (user) {
   }
 
 // Send appropriate Error Messages to the Error Message page
-module.exports.addUser = async function (userdetails, req, res) {
+module.exports.RegisterUser = async function (userdetails, req, res) {
      const user = wordleAccountProcess.createUserObject(userdetails)
     try{   
           await retrieveRegisteredUsers()
