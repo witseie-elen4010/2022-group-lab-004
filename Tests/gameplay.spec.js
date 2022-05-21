@@ -23,6 +23,5 @@ test('GuessedWord Included Letters Position Are returned', () => {
   const guessedWord = 'FLAGS'
   let Results = []
   Results = gameplay.EvaluateGuess(guessedWord)
-  console.log(Results[1])
   expect(Results[1]).toEqual([false, true, true, true, true])
 })
