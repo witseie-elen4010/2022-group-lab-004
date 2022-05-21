@@ -2,5 +2,5 @@
 
 const button = document.getElementById('startButton')
 button.addEventListener('click', function () {
-  location += 'modeoption'
+  location = String(location).replace("home", "modeoption")
 }, false)
