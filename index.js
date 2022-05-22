@@ -34,8 +34,15 @@ app.get('/singleplayer', function (request, response) {
   response.sendFile(path.join(__dirname, 'Views', 'singleplayer.html'))
 })
 
-app.get('/', function (req, res) {
-  res.sendFile(path.join(__dirname + '/Views/Register.html'))
+app.get('/multiPlayer', function (request, response) {
+  mod.RandomSolutionWord()
+  solutionWord = mod.getSolutionWord()
+  console.log(solutionWord)
+  response.sendFile(path.join(__dirname, 'Views', 'multiPlayer.html'))
+})
+
+app.get('/', function(req, res){
+  res.sendFile(path.join(__dirname + "/Views/Register.html"))
 })
 
 app.post('/api', (req, res) => {
