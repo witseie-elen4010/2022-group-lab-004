@@ -1,0 +1,137 @@
+* {
+    color: black;
+    font-family:'Times New Roman', Times, serif
+ }
+ 
+ body {
+     background-color: rgb(216, 212, 212);
+ }
+ .game-container{
+     height: 85vh;
+     display: flex;
+     flex-direction: column;
+     justify-content: space-between;
+     align-items: center;
+ }
+ 
+ .GameName-container{
+     text-align: center;
+     width: 500px;
+     border-bottom: solid 1px #3a3a3c;
+ }
+ 
+ /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+ /*Styling for the grid on the left. Which is the player*/
+ /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+ .BoxGrid-container-Left{
+ 
+     width: 295px;
+     height: 100px;
+     margin-bottom: 3000px;
+     margin-right: 600px;
+ }
+ 
+ .BoxGrid-container-Left div{
+     display: flex;
+ }
+ 
+ .BoxGrid-container-Left .box {
+     width: 55px;
+     height: 55px;
+     border: 2px solid #3a3a3c;
+     box-sizing: border-box;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     margin: 2px;
+ 
+ /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/}
+ 
+ 
+ /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+ /*Styling for the grid on the right. Which is the opponent*/
+ /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+ #BoxGrid-container-Right {
+     display: grid;
+     grid-template-columns: repeat(5, 1fr);
+     grid-gap: 5px;
+     padding: 10px;
+     box-sizing: border-box;
+     margin-left: 600px;
+     margin-top: 60px;
+     
+     width: 50px;
+     height: 20px;
+   }
+ 
+ .boxes {
+     border: 2px solid rgb(58, 58, 60);
+     min-width: 50px;
+     min-height: 50px;
+     font-size: 50px;
+     font-weight: bold;
+     color: gainsboro;
+     text-transform: uppercase;
+   
+     display: flex;
+     justify-content: center;
+     align-items: center;
+ }
+ /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+ 
+ 
+ /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+ /*Adding colour*/
+ /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+ /*The ordder is important because if the letter is in the word then it will get
+ a yellow overlay. But if its also in the correct position it will
+ get a green overlay.*/
+ .greyColour {
+     background-color: #3a3a3c !important; /*The background colour will overwrite anything set previously*/
+     border:none !important; /*The border is removed so we just have the green block*/
+ }
+ .yellowColour {
+     background-color: #b59f3a !important;
+     border:none !important;
+ }
+ 
+ .greenColour {
+     background-color: #538d4e !important;
+     border:none !important;
+ }
+ 
+ /*Win or loose message*/
+ .message-container {
+     height: 30px;
+ }
+ 
+ .message-container p {  /*Styled such that only p tags that are in the messsage container have this styling*/
+     background-color: #818384;
+     border-radius: 10px;
+     padding: 10px;
+     margin: 0;
+ }
+ /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+ 
+ 
+ /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+ /*Animation that will flip the boxes*/
+ /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+ .flip {
+     animation: 0.5s linear flipping;
+ }
+ /*Essentially flipping them 90 deg and then back to give the illusion of fipping completely*/
+ @keyframes flipping {
+     0% {
+         transform: rotateX(0deg);
+     }
+     50% {
+         transform: rotateX(90deg);
+     }
+     100% {
+         transform: rotateX(0deg);
+     }
+ }
+ /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+ 
+ 
