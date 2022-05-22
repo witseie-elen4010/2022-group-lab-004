@@ -7,9 +7,9 @@ const app = express()
 const homeRoute = require('./Routes/homeRoute')
 const modeRoute = require('./Routes/modeRoute')
 const wordleAccountManager = require('./Backend/WordleaccountManagement')
-
 const mod = require('./WordList.js')
 const lobbyRoute = require('./Routes/lobbyRoute')
+const loginRoute = require('./Routes/loginRoute')
 
 const bodyParser = require('body-parser')
 
@@ -25,6 +25,7 @@ app.use('/cdn', express.static('Public'))
 app.use('/', homeRoute)
 app.use('/', modeRoute)
 app.use('/', lobbyRoute)
+app.use('/', loginRoute)
 
 app.get('/singleplayer', function (request, response) {
   mod.RandomSolutionWord()
@@ -62,10 +63,14 @@ app.post('/api', (req, res) => {
     IncludedIndex
   })
 })
+app.post('/api/login-user', (req, res) => {
+  wordleAccountManager.LoginUser(req.body, req, res)
+})
 
-app.post('/api/register-user', (req,res) => {
+app.post('/api/register-user', (req, res) => {
   wordleAccountManager.RegisterUser(req.body, req, res)
 })
+
 const port = process.env.PORT || 3000
 app.listen(port)
 console.log('Express server running on port', port)
