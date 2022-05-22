@@ -6,8 +6,7 @@ const router = express.Router()
 
 router.get('/multiplayer/random', function (request, response) {
     const id = request.query.id
-    const game = mockGames.
-    response.sendFile(path.join(__dirname, '../Views', 'singleplayer.html'))
+    response.send(mockGames.getGame(id))
   })
   
 router.get('/multiplayer/choose', function (request, response) {
