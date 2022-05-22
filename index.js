@@ -71,8 +71,6 @@ app.post('/api/scoreGet', (req, res) => {
 })
 
 app.post('/api/scorePost', (req, res) => {
-  console.log('Update score:')
-  console.log(req.body.score)
   score.postScore(req)
 })
 
