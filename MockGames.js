@@ -10,6 +10,10 @@ const games = [
     {
         gameID: 3,
         description: 'This is game 3'
+    },
+    {
+        gameID: 4,
+        description: 'This is game 4'
     }]
 
 

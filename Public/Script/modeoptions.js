@@ -10,5 +10,5 @@ button.addEventListener('click', function () {
 
 const chooseButton = document.getElementById('multiplayerModeChoose')
 button.addEventListener('click', function () {
-  location = String(location).replace("modeoption", "/multiplayer/choose")
+  location = String(location).replace("modeoption", "hostlobby")
 }, false)
