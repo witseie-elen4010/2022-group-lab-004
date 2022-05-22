@@ -56,9 +56,22 @@ app.post('/api', (req, res) => {
   })
 })
 
+app.get('./multiplayerRoute', function(req, res) {
+  const user_id = req.query.id;
+  
+
+  res.send({
+    'user_id': user_id,
+    
+  });
+});
+
 app.post('/api/register-user', (req,res) => {
   wordleAccountManager.RegisterUser(req.body, req, res)
 })
 const port = process.env.PORT || 3000
 app.listen(port)
 console.log('Express server running on port', port)
+
+
+
