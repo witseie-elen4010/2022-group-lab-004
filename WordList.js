@@ -1,4 +1,4 @@
-const WordsList = ['Ounce', 'flesh', 'march', 'nurse', 'stage', 'flight', 'glass', 'stair', 'chief', 'label']
+const WordsList = ['Ounce', 'flesh', 'march', 'nurse', 'stage', 'glass', 'stair', 'chief', 'label']
 let solutionWord
 
 module.exports = {
