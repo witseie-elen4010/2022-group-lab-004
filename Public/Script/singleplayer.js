@@ -89,8 +89,6 @@ const GuessedWordValidation = (guessedWord) => {
 
     WordEvaluation(guessedWord)
     
-    Score.incrementScore()
-    
   }).catch(() => {
     window.alert('word not in a dictioanary')
   })
@@ -101,11 +99,14 @@ const UpdateGamePlay = () => {
     if (isCorrectGuess()) {
       console.log('You Won')
       isGameOver = true
+      window.alert('You won :) Click OK to continue...')
+      endGame()
     } else {
       if (currentGridRow >= 5) {
         console.log('You Lost')
         isGameOver = true
-       
+        window.alert('You lost :( Click OK to continue...')
+        endGame()
       }
       if (currentGridRow < 5) {
         
@@ -141,16 +142,20 @@ const deleteLetter = () => {
 
 const Score = {
   value: {
-    score: 0,
+    score: 1500,
     display: null
   },
 
-  incrementScore () {
-    this.value.score += 10
+  setZero () {
+    this.value.score = 0
   },
 
-  decrementScore () {
-    this.value.score -= 10
+  incrementScore (value) {
+    this.value.score += value
+  },
+
+  decrementScore (value) {
+    this.value.score -= value
   },
 
   getScore () {
@@ -250,6 +255,7 @@ const Keyboard = {
 
 window.addEventListener('DOMContentLoaded', function () {
   Keyboard.setup()
+  initScoreValue()
 })
 
 
@@ -263,10 +269,13 @@ const changeBox = () => {
   // Remove letter once it has been coloured to prevent double colouring
 
   const guess = []
+  Score.setZero()
   
   rowBox.forEach((box,index) => {
 
       guess.push({letter: box.getAttribute('data'), styling: 'greyColour'})
+      Score.decrementScore(50)
+
   })
 
     //initialisng the 5 latest clicked keys with the colour grey.
@@ -277,6 +286,7 @@ const changeBox = () => {
   guess.forEach((guess,index) => {
       if (IncludedIndex[index] == true) {
           guess.styling = 'yellowColour'
+          Score.incrementScore(20)
 
       }
     })
@@ -285,6 +295,7 @@ const changeBox = () => {
   guess.forEach((guess, index) => {
     if (MatchingIndex[index] == true) {
         guess.styling = 'greenColour'
+        Score.incrementScore(30)
     }
   })
 
@@ -325,9 +336,71 @@ const changeBox = () => {
       }
 
   }
-  
+  scoreEvaluation()
 }
 
+const initScoreValue = () => {
+  const id = 'test-john3'
+  const score = Score.getScore()
+  const data = {id, score}
+  const options = {
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  }
+  fetch('/api/scoreInit', options)
+  .catch((error) => {
+    console.error('Error:', error)
+  })
+}
 
+const scoreEvaluation = () => {
+  const id = 'test-john3'
+  let pass = {id}
+  let options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(pass)
+  }
+  fetch('/api/scoreGet', options)
+  .then(response => response.json())
+  .then(data => {
+    Score.incrementScore(data)
+    const score = Score.getScore()
+    pass = {id, score}
+    options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(pass)
+    }
+    fetch('/api/scorePost', options)
+    .catch((error) => {
+      console.error('Error:', error)
+    })
+  })
+  .catch((error) => {
+    console.error('Error:', error)
+  })
+}
 
-
+const endGame = () => {
+  location = String(location).replace('singleplayer', 'result')
+  const req = {location}
+  const options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(req)
+  }
+  fetch('/api/endGame', options)
+  .catch((error) => {
+    console.error('Error:', error)
+  })
+}
