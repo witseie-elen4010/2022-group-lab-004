@@ -7,6 +7,7 @@ const app = express()
 const homeRoute = require('./Routes/homeRoute')
 const modeRoute = require('./Routes/modeRoute')
 const wordleAccountManager = require('./Backend/WordleaccountManagement')
+const score = require('./Backend/score')
 
 const mod = require('./WordList.js')
 const lobbyRoute = require('./Routes/lobbyRoute')
@@ -59,6 +60,22 @@ app.post('/api', (req, res) => {
 app.post('/api/register-user', (req,res) => {
   wordleAccountManager.RegisterUser(req.body, req, res)
 })
+
+app.post('/api/scoreInit', (req, res) => {
+  score.initScore(req.body.id)
+})
+
+app.post('/api/scoreGet', (req, res) => {
+  score.getScore(req.body.id)
+  .then(value => res.json(value))
+})
+
+app.post('/api/scorePost', (req, res) => {
+  console.log('Update score:')
+  console.log(req.body.score)
+  score.postScore(req)
+})
+
 const port = process.env.PORT || 3000
 app.listen(port)
 console.log('Express server running on port', port)
