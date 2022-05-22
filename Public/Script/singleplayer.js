@@ -99,11 +99,14 @@ const UpdateGamePlay = () => {
     if (isCorrectGuess()) {
       console.log('You Won')
       isGameOver = true
+      window.alert('You won :) Click OK to continue...')
+      endGame()
     } else {
       if (currentGridRow >= 5) {
         console.log('You Lost')
         isGameOver = true
-       
+        window.alert('You lost :( Click OK to continue...')
+        endGame()
       }
       if (currentGridRow < 5) {
         
@@ -139,7 +142,7 @@ const deleteLetter = () => {
 
 const Score = {
   value: {
-    score: 0,
+    score: 1500,
     display: null
   },
 
@@ -271,7 +274,7 @@ const changeBox = () => {
   rowBox.forEach((box,index) => {
 
       guess.push({letter: box.getAttribute('data'), styling: 'greyColour'})
-      Score.decrementScore(10)
+      Score.decrementScore(50)
 
   })
 
@@ -292,7 +295,7 @@ const changeBox = () => {
   guess.forEach((guess, index) => {
     if (MatchingIndex[index] == true) {
         guess.styling = 'greenColour'
-        Score.incrementScore(60)
+        Score.incrementScore(30)
     }
   })
 
@@ -338,7 +341,8 @@ const changeBox = () => {
 
 const initScoreValue = () => {
   const id = 'test-john3'
-  const data = {id}
+  const score = Score.getScore()
+  const data = {id, score}
   const options = {
     method: 'post',
     headers: {
@@ -380,6 +384,22 @@ const scoreEvaluation = () => {
       console.error('Error:', error)
     })
   })
+  .catch((error) => {
+    console.error('Error:', error)
+  })
+}
+
+const endGame = () => {
+  location = String(location).replace('singleplayer', 'result')
+  const req = {location}
+  const options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(req)
+  }
+  fetch('/api/endGame', options)
   .catch((error) => {
     console.error('Error:', error)
   })

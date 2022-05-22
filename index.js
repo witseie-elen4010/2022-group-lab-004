@@ -62,7 +62,7 @@ app.post('/api/register-user', (req,res) => {
 })
 
 app.post('/api/scoreInit', (req, res) => {
-  score.initScore(req.body.id)
+  score.initScore(req)
 })
 
 app.post('/api/scoreGet', (req, res) => {
@@ -72,6 +72,14 @@ app.post('/api/scoreGet', (req, res) => {
 
 app.post('/api/scorePost', (req, res) => {
   score.postScore(req)
+})
+
+app.post('/api/endGame', (req, res) => {
+  res.redirect(req.body.href + '/result')
+})
+
+app.get('/result', function (request, response) {
+  response.sendFile(path.join(__dirname, 'Views', 'result.html'))
 })
 
 const port = process.env.PORT || 3000

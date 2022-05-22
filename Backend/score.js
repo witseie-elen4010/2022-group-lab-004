@@ -1,22 +1,21 @@
 const database = require('./database_Connection')
 
 module.exports.initScore = async function(req) {
-  const initScore = 0
   try {
-    let type = `SELECT score FROM dbo.Score WHERE id = '${req}'`
+    let type = `SELECT score FROM dbo.Score WHERE id = '${req.body.id}'`
     const pool = await database.pools
     const request = await pool.request()
     request.query(type, function (err, result) {
       if (err) throw err
       console.log(result)
       if (result.rowsAffected[0] === 0) {
-        type = `INSERT INTO dbo.Score (id, score) VALUES ('${req}', '${initScore}')`
+        type = `INSERT INTO dbo.Score (id, score) VALUES ('${req.body.id}', '${req.body.score}')`
         request.query(type, function (err, result) {
           if (err) throw err
           console.log('Score initialised!')
         })
       } else {
-        type = `UPDATE dbo.Score SET score = '${initScore}' WHERE id = '${req}'`
+        type = `UPDATE dbo.Score SET score = '${req.body.score}' WHERE id = '${req.body.id}'`
         request.query(type, function (err, result) {
           if (err) throw err
           console.log('Entry reinitialised!')
