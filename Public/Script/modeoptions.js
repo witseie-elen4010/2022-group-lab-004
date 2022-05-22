@@ -2,7 +2,7 @@
 
 const buttonSingle = document.getElementById('singlePlayerMode')
 buttonSingle.addEventListener('click', function () {
-  location = String(location).replace('modeoption', 'hostlobby')
+  location = String(location).replace('modeoption', 'singleplayer')
 }, false)
 
 const buttonMultiRand = document.getElementById('multiplayerModeRandom')
