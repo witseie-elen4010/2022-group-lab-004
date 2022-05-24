@@ -7,6 +7,8 @@ const app = express()
 const homeRoute = require('./Routes/homeRoute')
 const modeRoute = require('./Routes/modeRoute')
 const wordleAccountManager = require('./Backend/WordleaccountManagement')
+const score = require('./Backend/score')
+
 const mod = require('./WordList.js')
 const lobbyRoute = require('./Routes/lobbyRoute')
 const loginRoute = require('./Routes/loginRoute')
@@ -34,8 +36,15 @@ app.get('/singleplayer', function (request, response) {
   response.sendFile(path.join(__dirname, 'Views', 'singleplayer.html'))
 })
 
-app.get('/', function (req, res) {
-  res.sendFile(path.join(__dirname + '/Views/Register.html'))
+app.get('/multiPlayer', function (request, response) {
+  mod.RandomSolutionWord()
+  solutionWord = mod.getSolutionWord()
+  console.log(solutionWord)
+  response.sendFile(path.join(__dirname, 'Views', 'multiPlayer.html'))
+})
+
+app.get('/', function(req, res){
+  res.sendFile(path.join(__dirname + "/Views/Register.html"))
 })
 
 app.post('/api', (req, res) => {
@@ -62,6 +71,27 @@ app.post('/api/login-user', (req, res) => {
 
 app.post('/api/register-user', (req, res) => {
   wordleAccountManager.RegisterUser(req.body, req, res)
+})
+
+app.post('/api/scoreInit', (req, res) => {
+  score.initScore(req)
+})
+
+app.post('/api/scoreGet', (req, res) => {
+  score.getScore(req.body.id)
+  .then(value => res.json(value))
+})
+
+app.post('/api/scorePost', (req, res) => {
+  score.postScore(req)
+})
+
+app.post('/api/endGame', (req, res) => {
+  res.redirect(req.body.href + '/result')
+})
+
+app.get('/result', function (request, response) {
+  response.sendFile(path.join(__dirname, 'Views', 'result.html'))
 })
 
 const port = process.env.PORT || 3000
