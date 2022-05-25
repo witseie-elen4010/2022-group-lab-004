@@ -1,14 +1,14 @@
 const singleButton = document.getElementById('singlePlayerMode')
-button.addEventListener('click', function () {
+singleButton.addEventListener('click', function () {
   location = String(location).replace("modeoption","singleplayer")
 }, false)
 
 const randomButton = document.getElementById('multiplayerModeRandom')
-button.addEventListener('click', function () {
+randomButton.addEventListener('click', function () {
   location = String(location).replace("modeoption",  "hostlobby")
 }, false)
 
 const chooseButton = document.getElementById('multiplayerModeChoose')
-button.addEventListener('click', function () {
+chooseButton.addEventListener('click', function () {
   location = String(location).replace("modeoption", "hostlobby")
 }, false)
