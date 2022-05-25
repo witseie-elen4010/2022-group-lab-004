@@ -2,6 +2,7 @@
 
 const path = require('path')
 const express = require('express')
+const session = require('express-session')
 const app = express()
 
 const homeRoute = require('./Routes/homeRoute')
@@ -23,6 +24,15 @@ app.set('views', './Views')
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
+app.use(
+  session({
+    secret: 'Wordle cookie',
+    cookie: {},
+    resave: false,
+    saveUnitialized: false
+
+  })
+)
 app.use('/cdn', express.static('Public'))
 app.use('/', homeRoute)
 app.use('/', modeRoute)
@@ -43,8 +53,8 @@ app.get('/multiPlayer', function (request, response) {
   response.sendFile(path.join(__dirname, 'Views', 'multiPlayer.html'))
 })
 
-app.get('/', function(req, res){
-  res.sendFile(path.join(__dirname + "/Views/Register.html"))
+app.get('/', function (req, res) {
+  res.sendFile(path.join(__dirname + '/Views/Register.html'))
 })
 
 app.post('/api', (req, res) => {
@@ -69,6 +79,10 @@ app.post('/api/login-user', (req, res) => {
   wordleAccountManager.LoginUser(req.body, req, res)
 })
 
+app.post('/api/logout-user', (req, res) => {
+  wordleAccountManager.LogoutUser(req.body, req, res)
+})
+
 app.post('/api/register-user', (req, res) => {
   wordleAccountManager.RegisterUser(req.body, req, res)
 })
@@ -79,7 +93,7 @@ app.post('/api/scoreInit', (req, res) => {
 
 app.post('/api/scoreGet', (req, res) => {
   score.getScore(req.body.id)
-  .then(value => res.json(value))
+    .then(value => res.json(value))
 })
 
 app.post('/api/scorePost', (req, res) => {

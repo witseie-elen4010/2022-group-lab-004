@@ -83,6 +83,7 @@ module.exports.LoginUser = async function (userdetails, req, res) {
   for (let i = 0; i < users.length; i++) {
     if ((users[i].username === user.username && bcrypt.compareSync(user.password, users[i].password))) {
       found = true
+      wordleAccountProcess.setCookie(user, req, res)
       res.redirect('/home')
       break
     } else {
@@ -94,4 +95,9 @@ module.exports.LoginUser = async function (userdetails, req, res) {
     res.render('Error.ejs',
       { error: 'Invalid Username/Password', message: message, tips: [], buttonlink: '/', button: 'Try again' })
   }
+}
+
+module.exports.LogoutUser = async function (user, req, res) {
+  req.session.user = null
+  res.redirect('/login')
 }

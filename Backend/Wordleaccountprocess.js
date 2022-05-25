@@ -1,46 +1,47 @@
 'use strict'
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt')
+const req = require('express/lib/request')
 
 // Private Section
 
 // Stores Registered Accounts For Validation
 let RegisteredUsers = []
 
-// Public Section 
+// Public Section
 
 module.exports = {
-    getRegisteredUsers: function() {
-        return RegisteredUsers 
-    },
-    StoreRegisteredUser: function(user) {
-    //Insert user into the Registered User List
+  getRegisteredUsers: function () {
+    return RegisteredUsers
+  },
+  StoreRegisteredUser: function (user) {
+    // Insert user into the Registered User List
     RegisteredUsers.push(user)
-    },
-    // Clears the Registered Users List
-    clearRegisteredUsersList: function() {
+  },
+  // Clears the Registered Users List
+  clearRegisteredUsersList: function () {
     RegisteredUsers = []
-    },
-    // Validate If the Password is Valid.
-    isValidPassword: function (password_, email, username) {
-     const passwordValidLength = 7
-     return (!email.toUpperCase().includes(password_.toUpperCase()) && username.toUpperCase() !== password_.toUpperCase() && password_.length >= passwordValidLength)
-    },
-    // checks if the Email is not registered already
-    isUniqueEmail: function(email) {
-        for (let i = 0; i !== RegisteredUsers.length; i++) {
-            if (RegisteredUsers[i].email === email) { return false }
-          }
-          return true
-    },
-    // checks if the Username is not already registered
-    isUniqueUserName: function(username) {
-        for (let i = 0; i !== RegisteredUsers.length; i++) {
-            if (RegisteredUsers[i].username === username) { return false }
-          }
-          return true
-    },
-    // checks if the Username satisfies requirements
-    isValidUserName: function(username) {
+  },
+  // Validate If the Password is Valid.
+  isValidPassword: function (password_, email, username) {
+    const passwordValidLength = 7
+    return (!email.toUpperCase().includes(password_.toUpperCase()) && username.toUpperCase() !== password_.toUpperCase() && password_.length >= passwordValidLength)
+  },
+  // checks if the Email is not registered already
+  isUniqueEmail: function (email) {
+    for (let i = 0; i !== RegisteredUsers.length; i++) {
+      if (RegisteredUsers[i].email === email) { return false }
+    }
+    return true
+  },
+  // checks if the Username is not already registered
+  isUniqueUserName: function (username) {
+    for (let i = 0; i !== RegisteredUsers.length; i++) {
+      if (RegisteredUsers[i].username === username) { return false }
+    }
+    return true
+  },
+  // checks if the Username satisfies requirements
+  isValidUserName: function (username) {
     const minimumLength = 5
     if (username.length < minimumLength) { return false }
 
@@ -51,23 +52,25 @@ module.exports = {
       if ((alphabetLettersArray.indexOf(username[i].toLowerCase()) !== -1) || (validnumbersArray.indexOf(username[i]) !== -1)) { continue } else { return false }
     }
     return true
-    
-    },
-    //Checks if Email entered is a valid email
-    isValidEmail: function(email) {
-     const regexp = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-     return regexp.test(String((email.toLowerCase())))
-    },
-    // Create User Object 
-    createUserObject: function (userdetails) {
-
-        const User = {
-            username: userdetails.username,
-            email: userdetails.email,
-            password: userdetails.password
-        }
-        return User
+  },
+  // Checks if Email entered is a valid email
+  isValidEmail: function (email) {
+    const regexp = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    return regexp.test(String((email.toLowerCase())))
+  },
+  // Create User Object
+  createUserObject: function (userdetails) {
+    const User = {
+      username: userdetails.username,
+      email: userdetails.email,
+      password: userdetails.password
     }
-    
-}
+    return User
+  },
 
+  setCookie: function (userdetails, req, res) {
+    req.session.user = userdetails.username
+    const hour = 3600000
+    req.session.cookie.expires = new Date(Date.now() + hour)
+  }
+}

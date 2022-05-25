@@ -9,13 +9,19 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
+    
 
     <div class="game-container">
-        <div class="GameName-container">
+      <div class="GameName-container"> 
+        <div class = "Log-out">
+        <form action="/api/logout-user" method="post">
+            <button class="logout_button" type="submit">Logout</button>  
+        </form>
+        
+        </div>
             <h1>WordleVS</h1>
-        </div>
-        <div class="BoxGrid-container">
-        </div>
+     </div>
+        <div class="BoxGrid-container"> </div>
     </div>
     <script type="module" src="/cdn/Script/singleplayer.js"></script>
 </body>
