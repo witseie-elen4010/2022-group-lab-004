@@ -72,5 +72,6 @@ module.exports = {
     req.session.user = userdetails.username
     const hour = 3600000
     req.session.cookie.expires = new Date(Date.now() + hour)
+    req.session.save()
   }
 }

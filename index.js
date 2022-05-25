@@ -27,9 +27,9 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(
   session({
     secret: 'Wordle cookie',
-    cookie: {},
+    cookie: {httpOnly: false},
     resave: false,
-    saveUnitialized: false
+    saveUnitialized: true
 
   })
 )
