@@ -63,9 +63,8 @@ server.listen(port,() =>{
   console.log('Express server running on port', port)
 })
 
-io.on('connection', function(socket) {
-  var query = socket.handshake.query;
-  var roomName = query.roomName;
-  socket.join(roomName);
-  //console.log('user has joined lobby'+roomName)
-});
+io.on('connection', socket =>{
+  console.log("player connected: "+ socket.id)
+
+  //socket.emit('message','Welcome to the lobby')
+})

@@ -1,14 +1,15 @@
+const socket = io()
 const NewGamebtn = document.getElementById('createNewGame')
 
-NewGamebtn.addEventListener('click', function () {
+//socket.on('Joinedlobby', () =>{
+//  console.log('player1 event triggered')
+//})
 
-  var lobbyname = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
-  var socket = io({
-    query: {
-      lobbyname: lobbyname,
-      //console.log(lobbyname)
-    },
-});
+//setTimeout(()=>{
+//  socket.emit('join')
+//},3000)
+
+
+NewGamebtn.addEventListener('click', function () {
   location = String(location).replace("hostlobby", "singleplayer")
-  
 }, false)
