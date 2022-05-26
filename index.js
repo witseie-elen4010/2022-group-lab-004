@@ -1,9 +1,14 @@
 'use strict'
 
 const path = require('path')
+const http = require('http')
 const express = require('express')
-const app = express()
+const socketIo = require('socket.io')
 
+const app = express()
+const server = http.createServer(app)
+const io = socketIo(server)
+ 
 const homeRoute = require('./Routes/homeRoute')
 const modeRoute = require('./Routes/modeRoute')
 
@@ -29,6 +34,10 @@ app.get('/singleplayer', function (request, response) {
   response.sendFile(path.join(__dirname, 'Views', 'singleplayer.html'))
 })
 
+app.get('/hostlobby', function (req, res) {
+  //res.render('hostlobby')
+  res.sendFile(path.join(__dirname, 'Views', 'hostlobby.html'))
+})
 app.post('/api', (req, res) => {
   let MatchingIndex = []
   let IncludedIndex = []
@@ -49,5 +58,14 @@ app.post('/api', (req, res) => {
 })
 
 const port = process.env.PORT || 3000
-app.listen(port)
-console.log('Express server running on port', port)
+
+server.listen(port,() =>{
+  console.log('Express server running on port', port)
+})
+
+io.on('connection', function(socket) {
+  var query = socket.handshake.query;
+  var roomName = query.roomName;
+  socket.join(roomName);
+  //console.log('user has joined lobby'+roomName)
+});
