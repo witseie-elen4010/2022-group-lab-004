@@ -63,10 +63,6 @@ const port = process.env.PORT || 3000
 server.listen(port)
   console.log('Express server running on port', port)
 
-io.sockets.on('connection', socket =>{
-  socket.emit('connected', {message: 'You are connected'})
-  //host event
-  socket.on('hostCreateNewGame',hostCreateNewGame)
-  //player event
-  socket.on('playerjoinGame',playerJoinGame)  
+io.sockets.on('connection', function(socket){
+  utils.initGame(io, socket);
 })
