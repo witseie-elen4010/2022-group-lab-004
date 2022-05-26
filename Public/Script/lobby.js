@@ -6,7 +6,7 @@ NewGamebtn.addEventListener('click', function () {
   var socket = io({
     query: {
       lobbyname: lobbyname,
-      console.log(lobbyname)
+      //console.log(lobbyname)
     },
 });
   location = String(location).replace("hostlobby", "singleplayer")
