@@ -15,6 +15,7 @@
   },
   "homepage": "https://github.com/witseie-elen4010/2022-group-lab-004#readme",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "bootstrap": "5.1.3",
     "express": "4.18.1",
     "mssql": "8.1.1",
