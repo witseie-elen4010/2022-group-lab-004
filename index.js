@@ -4,7 +4,9 @@ const path = require('path')
 const http = require('http')
 const express = require('express')
 const socketIo = require('socket.io')
-var utils = require('./Utils');
+
+const lobbyRooms = {};
+//var utils = require('./Utils');
 
 const app = express()
 const server = http.createServer(app)
@@ -59,10 +61,53 @@ app.post('/api', (req, res) => {
   })
 })
 
+io.on('connection', player=>{
+  player.on('createNewGame', hostCreateNewGame);
+  player.on('joiGame', PlayerJoinsGame);
+
+  function hostCreateNewGame() {
+    // Create a unique Socket.IO Room
+    let roomId = ( Math.random() * 100000 ) | 0;
+    lobbyRooms[player.id] = roomId
+
+    player.emit('gameCode', roomId);
+
+    player.join(roomId.toString());
+
+    player.number = 1;
+    player.emit('init',1)
+  }
+
+  function PlayerJoinsGame(gameCode){
+    const room = io.sockets.adapter.rooms[gameCode];
+
+    let allUsers;
+    if(room){
+      allUsers = room.sockets;
+    }
+
+    let numPlayers = 0;
+    if(allUsers){
+      numPlayers = Object.keys(allUsers).length;
+    }
+
+    if(numPlayers === 0){
+      player.emit('unknownGame')
+      return;
+    }else if(numPlayers > 1){
+      player.emit('gameIsFull')
+      return;
+    }
+
+    lobbyRooms[player.id] = gameCode;
+    player.join(gameCode);
+
+    player.number = 2;
+    player.emit('init',2)
+  }
+
+})
+
 const port = process.env.PORT || 3000
 server.listen(port)
   console.log('Express server running on port', port)
-
-io.sockets.on('connection', function(socket){
-  utils.initGame(io, socket);
-})
