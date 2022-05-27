@@ -393,9 +393,8 @@ const changeBox = () => {
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 const initScoreValue = () => {
-  const id = document.cookie
   const score = Score.getScore()
-  const data = {id, score}
+  const data = {score}
   const options = {
     method: 'post',
     headers: {
@@ -411,21 +410,18 @@ const initScoreValue = () => {
 }
 
 const scoreEvaluation = () => {
-  const id = document.cookie
-  let pass = {id}
   let options = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(pass)
+    }
   }
   fetch('/api/scoreGet', options)
   .then(response => response.json())
   .then(data => {
     Score.incrementScore(data)
     const score = Score.getScore()
-    pass = {id, score}
+    const pass = {score}
     options = {
       method: 'POST',
       headers: {

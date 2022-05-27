@@ -4,17 +4,17 @@ const path = require('path')
 const express = require('express')
 const session = require('express-session')
 const app = express()
+const bodyParser = require('body-parser')
 
 const homeRoute = require('./Routes/homeRoute')
 const modeRoute = require('./Routes/modeRoute')
 const wordleAccountManager = require('./Backend/WordleaccountManagement')
 const score = require('./Backend/score')
+const log = require('./Backend/logActions')
 
 const mod = require('./WordList.js')
 const lobbyRoute = require('./Routes/lobbyRoute')
 const loginRoute = require('./Routes/loginRoute')
-
-const bodyParser = require('body-parser')
 
 let solutionWord
 
@@ -27,7 +27,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(
   session({
     secret: 'Wordle cookie',
-    cookie: {httpOnly: false},
+    cookie: {},
     resave: false,
     saveUnitialized: true
 
@@ -77,14 +77,17 @@ app.post('/api', (req, res) => {
 })
 app.post('/api/login-user', (req, res) => {
   wordleAccountManager.LoginUser(req.body, req, res)
+  log.logSignIn(req)
 })
 
 app.post('/api/logout-user', (req, res) => {
   wordleAccountManager.LogoutUser(req.body, req, res)
+  log.logSignOut(req)
 })
 
 app.post('/api/register-user', (req, res) => {
   wordleAccountManager.RegisterUser(req.body, req, res)
+  log.logSignUp(req)
 })
 
 app.post('/api/scoreInit', (req, res) => {
@@ -93,7 +96,7 @@ app.post('/api/scoreInit', (req, res) => {
 })
 
 app.post('/api/scoreGet', (req, res) => {
-  score.getScore(req.body.id)
+  score.getScore(req)
     .then(value => res.json(value))
 })
 
@@ -116,6 +119,25 @@ app.post('/api/endGameMulti', (req, res) => {
 
 app.get('/resultMulti', function (request, response) {
   response.sendFile(path.join(__dirname, 'Views', 'resultMulti.html'))
+})
+
+app.post('/api/logAction', (req, res) => {
+  if(req.body.action === 'startSingle') {
+    log.logStartSingle(req)
+  }
+  if(req.body.action === 'startMultiRand') {
+    log.logStartMultiRand(req)
+  }
+  if(req.body.action === 'guessWord') {
+    log.logGuessWord(req)
+  }
+  /* if(req.body.action === 'startMultiChoose') {
+    log.logStartMultiChoose(req)
+  } */
+  /* if(req.body.action === 'accessLog') {
+    log.logAccessLog(req)
+  } */
+  res.json('done')
 })
 
 const port = process.env.PORT || 3000
