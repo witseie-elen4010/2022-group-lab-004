@@ -3,21 +3,19 @@
 const path = require('path')
 const http = require('http')
 const express = require('express')
-const socketIo = require('socket.io')
-
-const lobbyRooms = {};
-//var utils = require('./Utils');
-
+const session = require('express-session')
 const app = express()
 const server = http.createServer(app)
 const io = socketIo(server)
 
 const homeRoute = require('./Routes/homeRoute')
 const modeRoute = require('./Routes/modeRoute')
-
+const wordleAccountManager = require('./Backend/WordleaccountManagement')
+const score = require('./Backend/score')
 
 const mod = require('./WordList.js')
 const lobbyRoute = require('./Routes/lobbyRoute')
+const loginRoute = require('./Routes/loginRoute')
 
 const bodyParser = require('body-parser')
 
@@ -29,10 +27,20 @@ app.set('views', './Views')
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
+app.use(
+  session({
+    secret: 'Wordle cookie',
+    cookie: {httpOnly: false},
+    resave: false,
+    saveUnitialized: true
+
+  })
+)
 app.use('/cdn', express.static('Public'))
 app.use('/', homeRoute)
 app.use('/', modeRoute)
 app.use('/', lobbyRoute)
+app.use('/', loginRoute)
 
 
 app.get('/singleplayer', function (request, response) {
@@ -40,6 +48,17 @@ app.get('/singleplayer', function (request, response) {
   solutionWord = mod.getSolutionWord()
   console.log(solutionWord)
   response.sendFile(path.join(__dirname, 'Views', 'singleplayer.html'))
+})
+
+app.get('/multiPlayer', function (request, response) {
+  mod.RandomSolutionWord()
+  solutionWord = mod.getSolutionWord()
+  console.log(solutionWord)
+  response.sendFile(path.join(__dirname, 'Views', 'multiPlayer.html'))
+})
+
+app.get('/', function (req, res) {
+  res.sendFile(path.join(__dirname + '/Views/Register.html'))
 })
 
 app.post('/api', (req, res) => {
@@ -60,52 +79,37 @@ app.post('/api', (req, res) => {
     IncludedIndex
   })
 })
+app.post('/api/login-user', (req, res) => {
+  wordleAccountManager.LoginUser(req.body, req, res)
+})
 
-io.on('connection', player=>{
-  player.on('createNewGame', hostCreateNewGame);
-  player.on('joiGame', PlayerJoinsGame);
+app.post('/api/logout-user', (req, res) => {
+  wordleAccountManager.LogoutUser(req.body, req, res)
+})
 
-  function hostCreateNewGame() {
-    // Create a unique Socket.IO Room
-    let roomId = ( Math.random() * 100000 ) | 0;
-    lobbyRooms[player.id] = roomId
+app.post('/api/register-user', (req, res) => {
+  wordleAccountManager.RegisterUser(req.body, req, res)
+})
 
-    player.emit('gameCode', roomId);
+app.post('/api/scoreInit', (req, res) => {
+  score.initScore(req)
+})
 
-    player.join(roomId.toString());
+app.post('/api/scoreGet', (req, res) => {
+  score.getScore(req.body.id)
+    .then(value => res.json(value))
+})
 
-    player.number = 1;
-    player.emit('init',1)
-  }
+app.post('/api/scorePost', (req, res) => {
+  score.postScore(req)
+})
 
-  function PlayerJoinsGame(gameCode){
-    const room = io.sockets.adapter.rooms[gameCode];
+app.post('/api/endGame', (req, res) => {
+  res.redirect(req.body.href + '/result')
+})
 
-    let allUsers;
-    if(room){
-      allUsers = room.sockets;
-    }
-
-    let numPlayers = 0;
-    if(allUsers){
-      numPlayers = Object.keys(allUsers).length;
-    }
-
-    if(numPlayers === 0){
-      player.emit('unknownGame')
-      return;
-    }else if(numPlayers > 1){
-      player.emit('gameIsFull')
-      return;
-    }
-
-    lobbyRooms[player.id] = gameCode;
-    player.join(gameCode);
-
-    player.number = 2;
-    player.emit('init',2)
-  }
-
+app.get('/result', function (request, response) {
+  response.sendFile(path.join(__dirname, 'Views', 'result.html'))
 })
 
 const port = process.env.PORT || 3000

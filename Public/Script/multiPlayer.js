@@ -1,8 +1,9 @@
 'use strict'
 
-const boxGridDisplay = document.querySelector('.BoxGrid-container')
+const boxGridDisplay = document.querySelector('.BoxGrid-container-Left')
 const wordToGuess = 'PAUSE'
 const clickedLetters = []
+const oppponentGrid = []
 
 
 let MatchingIndex = []
@@ -10,6 +11,9 @@ let IncludedIndex = []
 let increment = 0
 
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+//Creating the grid for the player.
+/////////////////////////////////////////////////////////////////////////////////////////////////
 const boxGrid = [
   ['', '', '', '', ''],
   ['', '', '', '', ''],
@@ -35,9 +39,35 @@ boxGrid.forEach((gridRow, gridRowIndex) => {
   })
   boxGridDisplay.appendChild(rowElement)
 })
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+//Creating a grid for the opponent
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+const gridBoxes = document.getElementById("BoxGrid-container-Right")
+
+createBox()
+
+function createBox() {
+
+  
+    for (let index = 0; index <30; index++){
+      let boxes = document.createElement("div")
+      boxes.classList.add("boxes")
+      boxes.setAttribute("id", index + 1)
+      oppponentGrid.push(boxes)
+      gridBoxes.appendChild(boxes)
+    }
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+//Adds letter to the player's grid
+/////////////////////////////////////////////////////////////////////////////////////////////////
 const insertLetter = (letter) => {
   const box = document.getElementById('gridRow-' + currentGridRow + '-box-' + currentBox)
   box.textContent = letter
@@ -46,6 +76,9 @@ const insertLetter = (letter) => {
   currentBox++
   console.log('boxGrid', boxGrid)
 }
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 
 const isCorrectGuess = () => {
   return !MatchingIndex.includes(false)
@@ -89,6 +122,8 @@ const GuessedWordValidation = (guessedWord) => {
 
     WordEvaluation(guessedWord)
     
+    Score.incrementScore()
+    
   }).catch(() => {
     window.alert('word not in a dictioanary')
   })
@@ -99,14 +134,11 @@ const UpdateGamePlay = () => {
     if (isCorrectGuess()) {
       console.log('You Won')
       isGameOver = true
-      window.alert('You won :) Click OK to continue...')
-      endGame()
     } else {
       if (currentGridRow >= 5) {
         console.log('You Lost')
         isGameOver = true
-        window.alert('You lost :( Click OK to continue...')
-        endGame()
+       
       }
       if (currentGridRow < 5) {
         
@@ -142,20 +174,16 @@ const deleteLetter = () => {
 
 const Score = {
   value: {
-    score: 1500,
+    score: 0,
     display: null
   },
 
-  setZero () {
-    this.value.score = 0
+  incrementScore () {
+    this.value.score += 10
   },
 
-  incrementScore (value) {
-    this.value.score += value
-  },
-
-  decrementScore (value) {
-    this.value.score -= value
+  decrementScore () {
+    this.value.score -= 10
   },
 
   getScore () {
@@ -255,12 +283,12 @@ const Keyboard = {
 
 window.addEventListener('DOMContentLoaded', function () {
   Keyboard.setup()
-  initScoreValue()
 })
 
 
-
-// this will add colour to the grid and the keyboard
+/////////////////////////////////////////////////////////////////////////////////////////////////
+//Adding colour to the Grid and the keyboard
+/////////////////////////////////////////////////////////////////////////////////////////////////
 const changeBox = () => {
 
   //get all the chidren of that row
@@ -269,24 +297,15 @@ const changeBox = () => {
   // Remove letter once it has been coloured to prevent double colouring
 
   const guess = []
-  Score.setZero()
   
   rowBox.forEach((box,index) => {
 
       guess.push({letter: box.getAttribute('data'), styling: 'greyColour'})
-      Score.decrementScore(50)
-
-  })
-
-    //initialisng the 5 latest clicked keys with the colour grey.
-    
-
-
+  })   
 
   guess.forEach((guess,index) => {
       if (IncludedIndex[index] == true) {
           guess.styling = 'yellowColour'
-          Score.incrementScore(20)
 
       }
     })
@@ -295,7 +314,6 @@ const changeBox = () => {
   guess.forEach((guess, index) => {
     if (MatchingIndex[index] == true) {
         guess.styling = 'greenColour'
-        Score.incrementScore(30)
     }
   })
 
@@ -318,10 +336,8 @@ const changeBox = () => {
 
   for (let ind = clickedLetters.length -5; ind< clickedLetters.length; ind++)
   {
-
+    //initialisng the 5 latest clicked keys with the colour grey.
     clickedLetters[ind].classList.add('greyColour')
-    //clickedLetters[ind].classList.remove('yellowColour')
-    //clickedLetters[ind].classList.remove('greenColour')
 
     let remainder = ind%5 // limiting the indicies to a maximum of 5
     if (IncludedIndex[remainder] == true ) {
@@ -336,71 +352,29 @@ const changeBox = () => {
       }
 
   }
-  scoreEvaluation()
-}
 
-const initScoreValue = () => {
-  const id = 'test-john3'
-  const score = Score.getScore()
-  const data = {id, score}
-  const options = {
-    method: 'post',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(data)
-  }
-  fetch('/api/scoreInit', options)
-  .catch((error) => {
-    console.error('Error:', error)
-  })
-}
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+    //Adding colour to the opponent
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+    for (let index = 0; index < 5; index++)
+    {
+      let gridIndex = index+(5*currentGridRow)
+      setTimeout( ()  => {
+        oppponentGrid[gridIndex].classList.add('flip')
+        oppponentGrid[gridIndex].classList.add('greyColour')
+        if (IncludedIndex[index] ===true){
+          
+          oppponentGrid[gridIndex].classList.add('yellowColour')
+        }
+        if (MatchingIndex[index] === true){
+          oppponentGrid[gridIndex].classList.add('greenColour')
+        }
+        console.log("checking how many times this ran: "+index+" for opponent: "+gridIndex)
+      }, 250*index  )
+    /////////////////////////////////////////////////////////////////////////////////////////////////
 
-const scoreEvaluation = () => {
-  const id = 'test-john3'
-  let pass = {id}
-  let options = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(pass)
-  }
-  fetch('/api/scoreGet', options)
-  .then(response => response.json())
-  .then(data => {
-    Score.incrementScore(data)
-    const score = Score.getScore()
-    pass = {id, score}
-    options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(pass)
+    
     }
-    fetch('/api/scorePost', options)
-    .catch((error) => {
-      console.error('Error:', error)
-    })
-  })
-  .catch((error) => {
-    console.error('Error:', error)
-  })
 }
 
-const endGame = () => {
-  location = String(location).replace('singleplayer', 'result')
-  const req = {location}
-  const options = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(req)
-  }
-  fetch('/api/endGame', options)
-  .catch((error) => {
-    console.error('Error:', error)
-  })
-}
+/////////////////////////////////////////////////////////////////////////////////////////////////
