@@ -312,11 +312,13 @@ const changeBox = () => {
   rowBox.forEach((box,index) => {
 
       guess.push({letter: box.getAttribute('data'), styling: 'greyColour'})
+      Score.decrementScore(50)
   })   
 
   guess.forEach((guess,index) => {
       if (IncludedIndex[index] == true) {
           guess.styling = 'yellowColour'
+          Score.incrementScore(20)
 
       }
     })
@@ -325,6 +327,7 @@ const changeBox = () => {
   guess.forEach((guess, index) => {
     if (MatchingIndex[index] == true) {
         guess.styling = 'greenColour'
+        Score.incrementScore(30)
     }
   })
 
