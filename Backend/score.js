@@ -40,10 +40,8 @@ module.exports.getScore = async function(req) {
 }
 
 module.exports.postScore = async function(req) {
-  const id = req.body.id
-  const newScore = req.body.score
   try {
-    let type = `UPDATE dbo.Score SET score = '${newScore}' WHERE id = '${id}'`
+    let type = `UPDATE dbo.Score SET score = '${req.body.score}' WHERE id = '${req.body.id}'`
     const pool = await database.pools
     const request = await pool.request()
     request.query(type, function (err, result) {

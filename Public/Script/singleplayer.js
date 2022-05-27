@@ -344,7 +344,7 @@ const changeBox = () => {
 }
 
 const initScoreValue = () => {
-  const id = 'test-john3'
+  const id = document.cookie
   const score = Score.getScore()
   const data = {id, score}
   const options = {
@@ -362,7 +362,7 @@ const initScoreValue = () => {
 }
 
 const scoreEvaluation = () => {
-  const id = 'test-john3'
+  const id = document.cookie
   let pass = {id}
   let options = {
     method: 'POST',

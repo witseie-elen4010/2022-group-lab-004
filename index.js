@@ -110,6 +110,14 @@ app.get('/result', function (request, response) {
   response.sendFile(path.join(__dirname, 'Views', 'result.html'))
 })
 
+app.post('/api/endGameMulti', (req, res) => {
+  res.redirect(req.body.href + '/resultMulti')
+})
+
+app.get('/resultMulti', function (request, response) {
+  response.sendFile(path.join(__dirname, 'Views', 'resultMulti.html'))
+})
+
 const port = process.env.PORT || 3000
 app.listen(port)
 console.log('Express server running on port', port)
