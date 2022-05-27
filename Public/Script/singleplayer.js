@@ -99,14 +99,18 @@ const UpdateGamePlay = () => {
     if (isCorrectGuess()) {
       console.log('You Won')
       isGameOver = true
-      window.alert('You won :) Click OK to continue...')
-      endGame()
+      setTimeout(() => {
+        window.alert('You won :) Click OK to continue...')
+        endGame()
+      }, 1500)
     } else {
       if (currentGridRow >= 5) {
         console.log('You Lost')
         isGameOver = true
-        window.alert('You lost :( Click OK to continue...')
-        endGame()
+        setTimeout(() => {
+          window.alert('You lost :( Click OK to continue...')
+          endGame()
+        }, 1500)
       }
       if (currentGridRow < 5) {
         
@@ -351,6 +355,7 @@ const initScoreValue = () => {
     body: JSON.stringify(data)
   }
   fetch('/api/scoreInit', options)
+  .then(res => res.json())
   .catch((error) => {
     console.error('Error:', error)
   })
@@ -380,6 +385,7 @@ const scoreEvaluation = () => {
       body: JSON.stringify(pass)
     }
     fetch('/api/scorePost', options)
+    .then(res => res.json())
     .catch((error) => {
       console.error('Error:', error)
     })

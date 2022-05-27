@@ -89,6 +89,7 @@ app.post('/api/register-user', (req, res) => {
 
 app.post('/api/scoreInit', (req, res) => {
   score.initScore(req)
+  res.json('done')
 })
 
 app.post('/api/scoreGet', (req, res) => {
@@ -98,6 +99,7 @@ app.post('/api/scoreGet', (req, res) => {
 
 app.post('/api/scorePost', (req, res) => {
   score.postScore(req)
+  res.json('done')
 })
 
 app.post('/api/endGame', (req, res) => {
