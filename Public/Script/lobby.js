@@ -5,9 +5,9 @@ socket.on('gameCode',handleGameCode)
 socket.on('unknownGame',handleUnknowGame)
 socket.on('gameIsFull',handleGameIsFull)
 
+
 const Newgamebutton = document.getElementById('createNewGame')
 const Joinbutton = document.getElementById('startGame')
-const Startbutton = document.getElementById('startGame')
 const gameIdInput = document.getElementById('gameCodeInput')
 const gameCodeDisplay = document.getElementById('gameCodeDisplay')
 
@@ -22,10 +22,6 @@ function clickCreateNewGame (){
 function clickJoinGame (){
   const code = gameIdInput.value;
   socket.emit('joinGame',code)
-}
-
-function clickStart (){
-  location = String(location).replace("hostlobby", "singleplayer/gameCode")
 }
 
 let playerNumber;
@@ -43,7 +39,8 @@ function handleUnknowGame(){
 }
 
 function handleGameIsFull(){
-  Startbutton.addEventListener('click', clickStart);
+  reset();
+  alert('game already in progress')
 }
 
 function reset(){
