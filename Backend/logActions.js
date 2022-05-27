@@ -82,6 +82,6 @@ module.exports.logAccessLog = async function (req) {
 
 module.exports.accessLog = async function () {
   const pool = await database.pools
-  const actions = await pool.request().query(`SELECT top 20 * from dbo.Log ORDER by unixTime`)
+  const actions = await pool.request().query(`SELECT top 20 * from dbo.Log ORDER BY unixTime DESC`)
   return actions
 }
