@@ -124,20 +124,33 @@ app.get('/resultMulti', function (request, response) {
 app.post('/api/logAction', (req, res) => {
   if(req.body.action === 'startSingle') {
     log.logStartSingle(req)
+    res.json('done')
   }
   if(req.body.action === 'startMultiRand') {
     log.logStartMultiRand(req)
+    res.json('done')
   }
   if(req.body.action === 'guessWord') {
     log.logGuessWord(req)
+    res.json('done')
   }
-  /* if(req.body.action === 'startMultiChoose') {
+  if(req.body.action === 'startMultiChoose') {
     log.logStartMultiChoose(req)
-  } */
-  /* if(req.body.action === 'accessLog') {
+    res.json('done')
+  }
+  if(req.body.action === 'accessLog') {
     log.logAccessLog(req)
-  } */
-  res.json('done')
+    .then(data => {
+      log.accessLog()
+      .then(actions => {
+        res.json(actions)
+      })
+    })
+  }
+})
+
+app.get('/log', function (request, response) {
+  response.sendFile(path.join(__dirname, 'Views', 'log.html'))
 })
 
 const port = process.env.PORT || 3000

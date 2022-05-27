@@ -21,3 +21,8 @@ fetch('/api/scoreGet', options)
 .catch((error) => {
   console.error('Error:', error)
 })
+
+const accessLogButton = document.getElementById('accessLogButton')
+accessLogButton.addEventListener('click', function () {
+  location = String(location).replace('resultMulti', 'log')
+}, false)
