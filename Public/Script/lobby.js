@@ -7,7 +7,7 @@ socket.on('gameIsFull',handleGameIsFull)
 
 
 const Newgamebutton = document.getElementById('createNewGame')
-const Joinbutton = document.getElementById('startGame')
+const Joinbutton = document.getElementById('JoinGame')
 const gameIdInput = document.getElementById('gameCodeInput')
 const gameCodeDisplay = document.getElementById('gameCodeDisplay')
 
@@ -17,11 +17,18 @@ Joinbutton.addEventListener('click', clickJoinGame);
 
 function clickCreateNewGame (){
   socket.emit('createNewGame')
+  init()
 }
 
 function clickJoinGame (){
   const code = gameIdInput.value;
   socket.emit('joinGame',code)
+  init()
+}
+
+function init(){
+  initialScreen.style.display = 'none'
+  gameScreen.style.display = 'block'
 }
 
 let playerNumber;
@@ -47,4 +54,6 @@ function reset(){
   playerNumber = null;
   gameIdInput.value = " ";
   gameCodeDisplay.innerText = " ";
+  initialScreen.style.display = "block";
+  gameScreen.style.display = "none";
 }

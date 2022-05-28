@@ -3,8 +3,8 @@ const path = require('path')
 
 const router = express.Router()
 
-router.get('/hostlobby', function (req, res) {
-  res.sendFile(path.join(__dirname, '../Views', 'hostlobby.html'))
+router.get('/multiPlayer', function (req, res) {
+  res.sendFile(path.join(__dirname, '../Views', 'multiPlayer.html'))
 })
 
 module.exports = router

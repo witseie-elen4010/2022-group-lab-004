@@ -22,6 +22,7 @@ const lobbyRoute = require('./Routes/lobbyRoute')
 const loginRoute = require('./Routes/loginRoute')
 
 const bodyParser = require('body-parser')
+const { makeid } = require('./utils')
 
 let solutionWord
 
@@ -118,26 +119,15 @@ app.get('/result', function (request, response) {
 
 io.on('connection', player=>{
   player.on('createNewGame', hostCreateNewGame);
-  player.on('joiGame', PlayerJoinsGame);
-
-  function hostCreateNewGame() {
-    // Create a unique Socket.IO Room
-    let roomId = ( Math.random() * 100000 ) | 0;
-    lobbyRooms[player.id] = roomId
-
-    player.emit('gameCode', roomId);
-
-    player.join(roomId.toString());
-
-    player.number = 1;
-    player.emit('init',1)
-  }
+  player.on('joinGame', PlayerJoinsGame);
 
   function PlayerJoinsGame(gameCode){
+    //returns current room from the socket object
     const room = io.sockets.adapter.rooms[gameCode];
 
     let allUsers;
     if(room){
+      //gives all of object of the current room
       allUsers = room.sockets;
     }
 
@@ -159,6 +149,19 @@ io.on('connection', player=>{
 
     player.number = 2;
     player.emit('init',2)
+  }
+
+  function hostCreateNewGame() {
+    // Create a unique Socket.IO Room
+    let roomId = makeid(7);
+    lobbyRooms[player.id] = roomId
+
+    player.emit('gameCode', roomId);
+
+    player.join(roomId);
+
+    player.number = 1;
+    player.emit('init',1)
   }
 
 })

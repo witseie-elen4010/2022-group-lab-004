@@ -5,10 +5,10 @@ singleButton.addEventListener('click', function () {
 
 const randomButton = document.getElementById('multiplayerModeRandom')
 randomButton.addEventListener('click', function () {
-  location = String(location).replace("modeoption",  "hostlobby")
+  location = String(location).replace("modeoption",  "multiPlayer")
 }, false)
 
 const chooseButton = document.getElementById('multiplayerModeChoose')
 chooseButton.addEventListener('click', function () {
-  location = String(location).replace("modeoption", "hostlobby")
+  location = String(location).replace("modeoption", "multiPlayer")
 }, false)
