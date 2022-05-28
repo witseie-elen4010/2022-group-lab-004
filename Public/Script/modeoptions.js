@@ -1,11 +1,14 @@
-'use strict'
-
-const buttonSingle = document.getElementById('singlePlayerMode')
-buttonSingle.addEventListener('click', function () {
-  location = String(location).replace('modeoption', 'singleplayer')
+const singleButton = document.getElementById('singlePlayerMode')
+singleButton.addEventListener('click', function () {
+  location = String(location).replace("modeoption","singleplayer")
 }, false)
 
-const buttonMultiRand = document.getElementById('multiplayerModeRandom')
-buttonMultiRand.addEventListener('click', function () {
-  location = String(location).replace('modeoption', 'hostlobby') // Change hostlobby to appropriate location if necessary
+const randomButton = document.getElementById('multiplayerModeRandom')
+randomButton.addEventListener('click', function () {
+  location = String(location).replace("modeoption",  "multiPlayer")
+}, false)
+
+const chooseButton = document.getElementById('multiplayerModeChoose')
+chooseButton.addEventListener('click', function () {
+  location = String(location).replace("modeoption", "multiPlayer")
 }, false)
