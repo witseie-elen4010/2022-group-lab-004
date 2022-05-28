@@ -58,8 +58,3 @@ function reset(){
   initialScreen.style.display = "block";
   gameScreen.style.display = "none";
 }
-
-const button = document.getElementById('JoinGame')
-button.addEventListener('click', function () {
-  location = String(location).replace("hostlobby", "multiPlayer")
-}, false)
