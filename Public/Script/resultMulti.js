@@ -19,6 +19,7 @@ fetch('/api/scoreGet', options)
   const text = document.createTextNode(`${score}`)
   displayText.appendChild(text)
   displayResults.appendChild(displayText)
+  // Add opponents score
 })
 .catch((error) => {
   console.error('Error:', error)
