@@ -5,8 +5,12 @@ const http = require('http')
 const express = require('express')
 const session = require('express-session')
 const app = express()
+const socketIo = require('socket.io')
+
 const server = http.createServer(app)
 const io = socketIo(server)
+
+const lobbyRooms = {};
 
 const homeRoute = require('./Routes/homeRoute')
 const modeRoute = require('./Routes/modeRoute')
@@ -110,6 +114,53 @@ app.post('/api/endGame', (req, res) => {
 
 app.get('/result', function (request, response) {
   response.sendFile(path.join(__dirname, 'Views', 'result.html'))
+})
+
+io.on('connection', player=>{
+  player.on('createNewGame', hostCreateNewGame);
+  player.on('joiGame', PlayerJoinsGame);
+
+  function hostCreateNewGame() {
+    // Create a unique Socket.IO Room
+    let roomId = ( Math.random() * 100000 ) | 0;
+    lobbyRooms[player.id] = roomId
+
+    player.emit('gameCode', roomId);
+
+    player.join(roomId.toString());
+
+    player.number = 1;
+    player.emit('init',1)
+  }
+
+  function PlayerJoinsGame(gameCode){
+    const room = io.sockets.adapter.rooms[gameCode];
+
+    let allUsers;
+    if(room){
+      allUsers = room.sockets;
+    }
+
+    let numPlayers = 0;
+    if(allUsers){
+      numPlayers = Object.keys(allUsers).length;
+    }
+
+    if(numPlayers === 0){
+      player.emit('unknownGame')
+      return;
+    }else if(numPlayers > 1){
+      player.emit('gameIsFull')
+      return;
+    }
+
+    lobbyRooms[player.id] = gameCode;
+    player.join(gameCode);
+
+    player.number = 2;
+    player.emit('init',2)
+  }
+
 })
 
 const port = process.env.PORT || 3000
