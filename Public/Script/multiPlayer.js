@@ -1,19 +1,124 @@
 'use strict'
 
-const boxGridDisplay = document.querySelector('.BoxGrid-container-Left')
-const wordToGuess = 'PAUSE'
-const clickedLetters = []
-const oppponentGrid = []
+const socket = io('/')
 
+let Id
+let gameId
+let OpponentClientID
+
+// Getting Lobby Front Page Elements
+const Newgamebutton = document.getElementById('createNewGame')
+const gameCodeDisplay = document.getElementById('gameCodeDisplay')
+const gameIdInput = document.getElementById('gameCodeInput')
+const Joinbutton = document.getElementById('JoinGame')
+
+// Server response For Client Connection.
+socket.on('clientID', function (data) {
+  if (Id === undefined) {
+    Id = data
+    console.log(Id)
+  }
+})
+
+socket.on('GameFull', function () {
+  gameId = null
+  window.alert('Game Room Is Full')
+})
+
+socket.on('InvalidRoom', (ID) => {
+  gameId = null
+  window.alert('Room with ID: ' + ID + 'Does not Exist')
+})
+
+socket.on('AlreadyJoined', () => {
+  window.alert('You Already Joined Please Wait For Another')
+})
+
+// Join And Game Create Event Listeners
+Newgamebutton.addEventListener('click', clickCreateNewGame)
+Joinbutton.addEventListener('click', clickJoinGame)
+
+function clickCreateNewGame () {
+  socket.emit('createNewGame', Id)
+}
+
+// Client receive created Game room.
+socket.on('create', (game) => {
+  gameId = game.id
+
+  gameCodeDisplay.innerText = game.id
+  gameIdInput.value = game.id
+
+  console.log('Game with ID: ' + gameId + ' Successfully Created')
+})
+
+function clickJoinGame () {
+  if (gameId == null) {
+    gameId = gameIdInput.value
+  }
+  const JoinDetails = {
+    clientID: Id,
+    gameID: gameId
+  }
+  socket.emit('joinGame', JoinDetails)
+}
+
+// Joined Game state is Received by the Client
+socket.on('joinGame', (payLoad) => {
+  console.log(payLoad[gameId].clients)
+  payLoad[gameId].clients.forEach(function (client) {
+    if (client.clientID !== Id) {
+      OpponentClientID = client.clientID
+      console.log('Opponent ID: ' + OpponentClientID)
+    }
+  })
+
+  if (payLoad[gameId].clients.length >= 2) {
+    init()
+  } else {
+    window.alert('Waiting For The Other Player')
+  }
+})
+
+// Client Receieve Game State With GuessedWord Evaluation
+socket.on('Results', (game) => {
+  MatchingIndex = game[gameId].gameState.MatchingIndex
+  IncludedIndex = game[gameId].gameState.IncludedIndex
+
+  const Opponent = {
+    clientID: OpponentClientID
+  }
+
+  if (game[gameId].gameState.clientID === Id) {
+    console.log('This is True')
+    // Update Game And Color Player Board and Key Board
+    changeBox()
+    UpdateGamePlay()
+  } else if (game[gameId].clients.some(function (u) {
+    if (u.clientID === Opponent.clientID) { return true }
+    return false
+  })) {
+    // Color The Opponent Board
+    ColorOpponentBoard()
+  }
+})
+
+// Change Display Style OF game screen and Initial Page
+function init () {
+  initialScreen.style.display = 'none'
+  gameScreen.style.display = 'block'
+  keyboardBoardID.style.display = 'block'
+}
+
+const boxGridDisplay = document.querySelector('.BoxGrid-container-Left')
+const clickedLetters = []
 
 let MatchingIndex = []
 let IncludedIndex = []
-let increment = 0
 
-
-/////////////////////////////////////////////////////////////////////////////////////////////////
-//Creating the grid for the player.
-/////////////////////////////////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////////////////////////////////
+// Creating the grid for the player.
+/// //////////////////////////////////////////////////////////////////////////////////////////////
 const boxGrid = [
   ['', '', '', '', ''],
   ['', '', '', '', ''],
@@ -23,6 +128,7 @@ const boxGrid = [
   ['', '', '', '', '']
 ]
 
+let OpponentcurrentRow = 0
 let currentGridRow = 0
 let currentBox = 0
 let isGameOver = false
@@ -35,39 +141,39 @@ boxGrid.forEach((gridRow, gridRowIndex) => {
     boxElement.setAttribute('id', 'gridRow-' + gridRowIndex + '-box-' + boxIndex)
     boxElement.classList.add('box')
     rowElement.append(boxElement)
-    
   })
   boxGridDisplay.appendChild(rowElement)
 })
-/////////////////////////////////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////////////////////////////////
 
+// Opponent Grid
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
-//Creating a grid for the opponent
-/////////////////////////////////////////////////////////////////////////////////////////////////
+const OpponenttileDisplay = document.querySelector('.BoxGrid-container-Right')
 
-const gridBoxes = document.getElementById("BoxGrid-container-Right")
+const OpponentguessRows = [
+  ['', '', '', '', ''],
+  ['', '', '', '', ''],
+  ['', '', '', '', ''],
+  ['', '', '', '', ''],
+  ['', '', '', '', ''],
+  ['', '', '', '', '']
+]
 
-createBox()
+OpponentguessRows.forEach((opponentguessRow, guessRowIndex) => {
+  const rowElement = document.createElement('div')
+  rowElement.setAttribute('id', 'OpponentguessRow-' + guessRowIndex)
 
-function createBox() {
-
-  
-    for (let index = 0; index <30; index++){
-      let boxes = document.createElement("div")
-      boxes.classList.add("boxes")
-      boxes.setAttribute("id", index + 1)
-      oppponentGrid.push(boxes)
-      gridBoxes.appendChild(boxes)
-    }
-}
-/////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////
-//Adds letter to the player's grid
-/////////////////////////////////////////////////////////////////////////////////////////////////
+  opponentguessRow.forEach((guess, guessIndex) => {
+    const tileElement = document.createElement('div')
+    tileElement.setAttribute('id', 'OpponentguessRow-' + guessRowIndex + '-box-' + guessIndex)
+    tileElement.classList.add('box')
+    rowElement.append(tileElement)
+  })
+  OpponenttileDisplay.appendChild(rowElement)
+})
+/// //////////////////////////////////////////////////////////////////////////////////////////////
+// Adds letter to the player's grid
+/// //////////////////////////////////////////////////////////////////////////////////////////////
 const insertLetter = (letter) => {
   const box = document.getElementById('gridRow-' + currentGridRow + '-box-' + currentBox)
   box.textContent = letter
@@ -76,37 +182,20 @@ const insertLetter = (letter) => {
   currentBox++
   console.log('boxGrid', boxGrid)
 }
-/////////////////////////////////////////////////////////////////////////////////////////////////
-
-
+/// //////////////////////////////////////////////////////////////////////////////////////////////
 
 const isCorrectGuess = () => {
   return !MatchingIndex.includes(false)
 }
 
 const WordEvaluation = (guessedWord) => {
-  const data = { guessedWord }
-
-  const options = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(data)
+  const payLoad = {
+    clientID: Id,
+    gameID: gameId,
+    guessedWord
   }
-
-  fetch('/api', options)
-    .then(response => response.json())
-    .then(data => {
-      MatchingIndex = data.MatchingIndex
-      IncludedIndex = data.IncludedIndex
-      changeBox()
-      UpdateGamePlay()
-
-    })
-    .catch((error) => {
-      console.error('Error:', error)
-    })
+  // Sends Guessword for Evaluation
+  socket.emit('Evaluate', payLoad)
 }
 
 const GuessedWordValidation = (guessedWord) => {
@@ -121,7 +210,6 @@ const GuessedWordValidation = (guessedWord) => {
     }
 
     WordEvaluation(guessedWord)
-    
   }).catch(() => {
     window.alert('word not in a dictioanary')
   })
@@ -146,8 +234,6 @@ const UpdateGamePlay = () => {
         }, 1500)
       }
       if (currentGridRow < 5) {
-        
-
         currentGridRow++
         currentBox = 0
       }
@@ -200,8 +286,6 @@ const Score = {
   }
 }
 
-
-
 const Keyboard = {
   properties: {
     board: null,
@@ -211,6 +295,7 @@ const Keyboard = {
 
   setup () {
     this.properties.board = document.createElement('div')
+    this.properties.board.id = 'keyboardBoardID'
     this.properties.keysContainer = document.createElement('div')
 
     this.properties.board.classList.add('board')
@@ -247,7 +332,7 @@ const Keyboard = {
         case 'backspace':
           element.classList.add('key--wide')
           element.innerHTML = HTMLicon('backspace')
-          
+
           element.addEventListener('click', () => {
             if (currentBox > 0 && !isGameOver) {
               deleteLetter()
@@ -271,8 +356,7 @@ const Keyboard = {
           element.addEventListener('click', () => {
             insertLetter(key)
             clickedLetters.push(element)
-            console.log('clickedLetters:' +clickedLetters)
-
+            console.log('clickedLetters:' + clickedLetters)
           })
 
           break
@@ -295,107 +379,95 @@ window.addEventListener('DOMContentLoaded', function () {
   initScoreValue()
 })
 
+/// //////////////////////////////////////////////////////////////////////////////////////////////
+// Adding colour to the Grid and the keyboard
+/// /////////////////////////////////////////////////////////////////////////////////////////////
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
-//Adding colour to the Grid and the keyboard
-/////////////////////////////////////////////////////////////////////////////////////////////////
-const changeBox = () => {
-
-  //get all the chidren of that row
-  const rowBox = document.querySelector('#gridRow-' + currentGridRow).childNodes//'#' makes sure to tell we are looking for an id
+/// //////////////////////////////////////////////////////////////////////////////////////////////
+// Adding colour to the Grid and the keyboard
+/// //////////////////////////////////////////////////////////////////////////////////////////////
+const changeBox = (guessedWord) => {
+  // get all the chidren of that row
+  const rowBox = document.querySelector('#gridRow-' + currentGridRow).childNodes// '#' makes sure to tell we are looking for an id
 
   // Remove letter once it has been coloured to prevent double colouring
 
   const guess = []
   Score.setZero()
-  
-  rowBox.forEach((box,index) => {
-
-      guess.push({letter: box.getAttribute('data'), styling: 'greyColour'})
-      Score.decrementScore(50)
-  })   
-
-  guess.forEach((guess,index) => {
-      if (IncludedIndex[index] == true) {
-          guess.styling = 'yellowColour'
-          Score.incrementScore(20)
-
-      }
-    })
-
-  //Check if each guess is a match
-  guess.forEach((guess, index) => {
-    if (MatchingIndex[index] == true) {
-        guess.styling = 'greenColour'
-        Score.incrementScore(30)
-    }
-  })
-
 
   rowBox.forEach((box, index) => {
-      setTimeout(() => {
-          box.classList.add('flip')
-          box.classList.add('greyColour')
-          if (IncludedIndex[index] == true ) {
-            box.classList.add('yellowColour')
-
-           }
-          if (MatchingIndex[index] == true) {
-          box.classList.add('greenColour')
-
-          }
-
-      }, 250 * index)
+    guess.push({ letter: box.getAttribute('data'), styling: 'greyColour' })
+    Score.decrementScore(50)
   })
 
-  for (let ind = clickedLetters.length -5; ind< clickedLetters.length; ind++)
-  {
-    //initialisng the 5 latest clicked keys with the colour grey.
+  guess.forEach((guess, index) => {
+    if (IncludedIndex[index] === true) {
+      guess.styling = 'yellowColour'
+      Score.incrementScore(20)
+    }
+  })
+
+  // Check if each guess is a match
+  guess.forEach((guess, index) => {
+    if (MatchingIndex[index] === true) {
+      guess.styling = 'greenColour'
+      Score.incrementScore(30)
+    }
+  })
+
+  rowBox.forEach((box, index) => {
+    setTimeout(() => {
+      box.classList.add('flip')
+      box.classList.add('greyColour')
+      if (IncludedIndex[index] === true) {
+        box.classList.add('yellowColour')
+      }
+      if (MatchingIndex[index] === true) {
+        box.classList.add('greenColour')
+      }
+    }, 250 * index)
+  })
+
+  for (let ind = clickedLetters.length - 5; ind < clickedLetters.length; ind++) {
+    // initialisng the 5 latest clicked keys with the colour grey.
     clickedLetters[ind].classList.add('greyColour')
 
-    let remainder = ind%5 // limiting the indicies to a maximum of 5
-    if (IncludedIndex[remainder] == true ) {
-      clickedLetters[ind].classList.remove('greenColour') //removing any green so that it will not overwrite the yellow
+    const remainder = ind % 5 // limiting the indicies to a maximum of 5
+    if (IncludedIndex[remainder] === true) {
+      clickedLetters[ind].classList.remove('greenColour') // removing any green so that it will not overwrite the yellow
       clickedLetters[ind].classList.add('yellowColour')
-    } 
-    if (MatchingIndex[remainder] == true) {
-
-
+    }
+    if (MatchingIndex[remainder] === true) {
       clickedLetters[ind].classList.add('greenColour')
-
-      }
-
+    }
   }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////
-    //Adding colour to the opponent
-    /////////////////////////////////////////////////////////////////////////////////////////////////
-    for (let index = 0; index < 5; index++)
-    {
-      let gridIndex = index+(5*currentGridRow)
-      setTimeout( ()  => {
-        oppponentGrid[gridIndex].classList.add('flip')
-        oppponentGrid[gridIndex].classList.add('greyColour')
-        if (IncludedIndex[index] ===true){
-          
-          oppponentGrid[gridIndex].classList.add('yellowColour')
-        }
-        if (MatchingIndex[index] === true){
-          oppponentGrid[gridIndex].classList.add('greenColour')
-        }
-        console.log("checking how many times this ran: "+index+" for opponent: "+gridIndex)
-      }, 250*index  )
-    /////////////////////////////////////////////////////////////////////////////////////////////////
-
-    }
-    scoreEvaluation()
+  scoreEvaluation()
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
+// Color The Opponent Board
+const ColorOpponentBoard = () => {
+  const rowTiles = document.querySelector('#OpponentguessRow-' + OpponentcurrentRow).childNodes
+  rowTiles.forEach((tile, index) => {
+    if (MatchingIndex[index]) {
+      tile.classList.add('greenColour')
+    } else if (IncludedIndex[index]) {
+      tile.classList.add('yellowColour')
+    } else {
+      tile.classList.add('greyColour')
+    }
+  })
+  if (OpponentcurrentRow < 5) {
+    OpponentcurrentRow++
+  }
+  scoreEvaluation()
+  logGuess(guessedWord)
+}
+
+/// //////////////////////////////////////////////////////////////////////////////////////////////
 const initScoreValue = () => {
-  const id = document.cookie
   const score = Score.getScore()
-  const data = {id, score}
+  const data = { score }
   const options = {
     method: 'post',
     headers: {
@@ -404,49 +476,63 @@ const initScoreValue = () => {
     body: JSON.stringify(data)
   }
   fetch('/api/scoreInit', options)
-  .then(res => res.json())
-  .catch((error) => {
-    console.error('Error:', error)
-  })
-}
-
-const scoreEvaluation = () => {
-  const id = document.cookie
-  let pass = {id}
-  let options = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(pass)
-  }
-  fetch('/api/scoreGet', options)
-  .then(response => response.json())
-  .then(data => {
-    Score.incrementScore(data)
-    const score = Score.getScore()
-    pass = {id, score}
-    options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(pass)
-    }
-    fetch('/api/scorePost', options)
     .then(res => res.json())
     .catch((error) => {
       console.error('Error:', error)
     })
-  })
-  .catch((error) => {
-    console.error('Error:', error)
-  })
+}
+
+const scoreEvaluation = () => {
+  const id = document.cookie
+  let pass = { id }
+  let options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }
+  fetch('/api/scoreGet', options)
+    .then(response => response.json())
+    .then(data => {
+      Score.incrementScore(data)
+      const score = Score.getScore()
+      pass = { id, score }
+      options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(pass)
+      }
+      fetch('/api/scorePost', options)
+        .then(res => res.json())
+        .catch((error) => {
+          console.error('Error:', error)
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+      Score.incrementScore(data)
+      const score = Score.getScore()
+      const pass = { score }
+      options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(pass)
+      }
+      fetch('/api/scorePost', options)
+        .then(res => res.json())
+        .catch((error) => {
+          console.error('Error:', error)
+        })
+    })
 }
 
 const endGame = () => {
   location = String(location).replace('multiPlayer', 'resultMulti')
-  const req = {location}
+  const req = { location }
   const options = {
     method: 'POST',
     headers: {
@@ -455,7 +541,24 @@ const endGame = () => {
     body: JSON.stringify(req)
   }
   fetch('/api/endGameMulti', options)
-  .catch((error) => {
-    console.error('Error:', error)
-  })
+    .catch((error) => {
+      console.error('Error:', error)
+    })
+}
+
+const logGuess = (guessedWord) => {
+  const word = guessedWord
+  const action = 'guessWord'
+  const data = { word, action }
+  const options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  }
+  fetch('/api/logAction', options)
+    .catch((error) => {
+      console.error('Error:', error)
+    })
 }
