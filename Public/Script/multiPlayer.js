@@ -80,6 +80,7 @@ socket.on('history', (game) => {
     return false
   })) {
     // Color The Opponent Board
+    ColorOpponentBoard()
   }
 })
 
@@ -91,7 +92,6 @@ function init () {
 const boxGridDisplay = document.querySelector('.BoxGrid-container-Left')
 const wordToGuess = 'PAUSE'
 const clickedLetters = []
-const oppponentGrid = []
 
 let MatchingIndex = []
 let IncludedIndex = []
@@ -461,27 +461,10 @@ const changeBox = () => {
     }
   }
 
-  /// //////////////////////////////////////////////////////////////////////////////////////////////
-  // Adding colour to the opponent
-  /// //////////////////////////////////////////////////////////////////////////////////////////////
-  for (let index = 0; index < 5; index++) {
-    const gridIndex = index + (5 * currentGridRow)
-    setTimeout(() => {
-      oppponentGrid[gridIndex].classList.add('flip')
-      oppponentGrid[gridIndex].classList.add('greyColour')
-      if (IncludedIndex[index] === true) {
-        oppponentGrid[gridIndex].classList.add('yellowColour')
-      }
-      if (MatchingIndex[index] === true) {
-        oppponentGrid[gridIndex].classList.add('greenColour')
-      }
-      console.log('checking how many times this ran: ' + index + ' for opponent: ' + gridIndex)
-    }, 250 * index)
-    /// //////////////////////////////////////////////////////////////////////////////////////////////
-  }
   scoreEvaluation()
 }
 
+// Color The Opponent Board
 const ColorOpponentBoard = () => {
   const rowTiles = document.querySelector('#OpponentguessRow-' + OpponentcurrentRow).childNodes
   rowTiles.forEach((tile, index) => {
