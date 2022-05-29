@@ -172,6 +172,7 @@ app.post('/api/endGameMulti', (req, res) => {
 app.get('/resultMulti', function (request, response) {
   response.sendFile(path.join(__dirname, 'Views', 'resultMulti.html'))
 })
+})
 
 const port = process.env.PORT || 3000
 server.listen(port)
