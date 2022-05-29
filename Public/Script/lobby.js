@@ -1,7 +1,7 @@
 
 const socket = io('http://localhost:3000')
 
-socket.on('init',handleInit);
+//socket.on('init',handleInit);
 socket.on('gameCode',handleGameCode)
 socket.on('unknownGame',handleUnknowGame)
 socket.on('gameIsFull',handleGameIsFull)
@@ -32,10 +32,10 @@ function init(){
   gameScreen.style.display = 'block'
 }
 
-let playerNumber;
-function handleInit(number){
-  playerNumber = number;
-}
+//let playerNumber;
+//function handleInit(number){
+ // playerNumber = number;
+//}
 
 function handleGameCode(gameCode){
   gameCodeDisplay.innerText = gameCode;

@@ -137,8 +137,8 @@ io.on('connection', player=>{
     }else{
       player.join(lobbyroomID);
 
-    player.number = 2;
-    player.emit('init',2)
+    //player.number = 2;
+    //player.emit('init',2)
     }
   }
 
@@ -153,8 +153,8 @@ io.on('connection', player=>{
 
     player.join(lobbyRooms[roomId].id);
 
-    player.number = 1;
-    player.emit('init',1)
+    //player.number = 1;
+    //player.emit('init',1)
   }
 app.post('/api/endGameMulti', (req, res) => {
   res.redirect(req.body.href + '/resultMulti')
