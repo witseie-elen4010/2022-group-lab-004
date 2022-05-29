@@ -119,6 +119,8 @@ app.get('/result', function (request, response) {
 })
 
 io.on('connection', player => {
+  console.log('We have a new client:' + player.id)
+  io.sockets.emit('clientID', player.id)
   player.on('createNewGame', hostCreateNewGame)
   player.on('joinGame', PlayerJoinsGame)
 
@@ -154,15 +156,14 @@ io.on('connection', player => {
 
   function hostCreateNewGame () {
     // Create a unique Socket.IO Room
-    const roomId = makeid(7);
-    lobbyRooms[player.id] = roomId
-
-    player.emit('gameCode', roomId)
-
-    player.join(roomId)
-
-    player.number = 1
-    player.emit('init', 1)
+    const roomId = makeid(7)
+    lobbyRooms[roomId] = {
+      id: roomId,
+      clients: [],
+      gameState: {}
+    }
+    console.log(lobbyRooms[roomId].id)
+    player.emit('create', lobbyRooms[roomId])
   }
 })
 app.post('/api/endGameMulti', (req, res) => {
