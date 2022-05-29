@@ -129,9 +129,14 @@ io.on('connection', player => {
   function PlayerJoinsGame (JoinDetails) {
     const clientID = JoinDetails.clientID
     const lobbyroomID = JoinDetails.gameID
+
+    if (lobbyRooms[lobbyroomID] === undefined) {
+      io.to(clientID).emit('InvalidRoom', lobbyroomID)
+      return
+    }
     console.log(lobbyRooms[lobbyroomID].clients.length)
     if (lobbyRooms[lobbyroomID].clients.length === 2) {
-      console.log('Game is Full')
+      io.to(clientID).emit('GameFull')
       return
     } else {
       lobbyRooms[lobbyroomID].clients.push({

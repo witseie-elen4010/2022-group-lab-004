@@ -20,6 +20,15 @@ socket.on('clientID', function (data) {
   }
 })
 
+socket.on('GameFull', function () {
+  window.alert('Game Room Is Full')
+})
+
+socket.on('InvalidRoom', (ID) => {
+  gameId = null
+  window.alert('Room with ID: ' + ID + 'Does not Exist')
+})
+
 // Join And Game Create Event Listeners
 Newgamebutton.addEventListener('click', clickCreateNewGame)
 Joinbutton.addEventListener('click', clickJoinGame)
@@ -33,6 +42,7 @@ socket.on('create', (game) => {
   gameId = game.id
 
   gameCodeDisplay.innerText = game.id
+  gameIdInput.value = game.id
 
   console.log('Game with ID: ' + gameId + ' Successfully Created')
 })
