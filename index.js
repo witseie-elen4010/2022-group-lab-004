@@ -10,7 +10,7 @@ const socketIo = require('socket.io')
 const server = http.createServer(app)
 const io = socketIo(server)
 
-const lobbyRooms = {};
+const lobbyRooms = {}
 
 const homeRoute = require('./Routes/homeRoute')
 const modeRoute = require('./Routes/modeRoute')
@@ -35,7 +35,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(
   session({
     secret: 'Wordle cookie',
-    cookie: {httpOnly: false},
+    cookie: { httpOnly: false },
     resave: false,
     saveUnitialized: true
 
@@ -46,7 +46,6 @@ app.use('/', homeRoute)
 app.use('/', modeRoute)
 app.use('/', lobbyRoute)
 app.use('/', loginRoute)
-
 
 app.get('/singleplayer', function (request, response) {
   mod.RandomSolutionWord()
@@ -119,52 +118,53 @@ app.get('/result', function (request, response) {
   response.sendFile(path.join(__dirname, 'Views', 'result.html'))
 })
 
-io.on('connection', player=>{
-  player.on('createNewGame', hostCreateNewGame);
-  player.on('joinGame', PlayerJoinsGame);
+io.on('connection', player => {
+  player.on('createNewGame', hostCreateNewGame)
+  player.on('joinGame', PlayerJoinsGame)
 
-  function PlayerJoinsGame(gameCode){
-    //returns current room from the socket object
-    const room = io.sockets.adapter.rooms[gameCode];
+  function PlayerJoinsGame (gameCode) {
+    // returns current room from the socket object
+    const room = io.sockets.adapter.rooms[gameCode]
 
-    let allUsers;
-    if(room){
-      //gives all of object of the current room
-      allUsers = room.sockets;
+    let allUsers
+    if (room) {
+      // gives all of object of the current room
+      allUsers = room.sockets
     }
 
-    let numPlayers = 0;
-    if(allUsers){
-      numPlayers = Object.keys(allUsers).length;
+    let numPlayers = 0
+    if (allUsers) {
+      numPlayers = Object.keys(allUsers).length
     }
 
-    if(numPlayers === 0){
+    if (numPlayers === 0) {
       player.emit('unknownGame')
-      return;
-    }else if(numPlayers > 1){
+      return
+    } else if (numPlayers > 1) {
       player.emit('gameIsFull')
-      return;
+      return
     }
 
-    lobbyRooms[player.id] = gameCode;
-    player.join(gameCode);
+    lobbyRooms[player.id] = gameCode
+    player.join(gameCode)
 
-    player.number = 2;
-    player.emit('init',2)
+    player.number = 2
+    player.emit('init', 2)
   }
 
-  function hostCreateNewGame() {
+  function hostCreateNewGame () {
     // Create a unique Socket.IO Room
-    let roomId = makeid(7);
+    const roomId = makeid(7);
     lobbyRooms[player.id] = roomId
 
-    player.emit('gameCode', roomId);
+    player.emit('gameCode', roomId)
 
-    player.join(roomId);
+    player.join(roomId)
 
-    player.number = 1;
-    player.emit('init',1)
+    player.number = 1
+    player.emit('init', 1)
   }
+})
 app.post('/api/endGameMulti', (req, res) => {
   res.redirect(req.body.href + '/resultMulti')
 })
@@ -175,4 +175,4 @@ app.get('/resultMulti', function (request, response) {
 
 const port = process.env.PORT || 3000
 server.listen(port)
-  console.log('Express server running on port', port)
+console.log('Express server running on port', port)
