@@ -143,6 +143,9 @@ io.on('connection', player=>{
       player.number = 2;
       player.emit('init',2)
     }
+    lobbyRooms[lobbyroomID].clients.forEach(client => {
+        io.to(client.clientID).emit('joinGame', lobbyRooms)
+      })
   }
 
   function hostCreateNewGame() {
@@ -152,9 +155,9 @@ io.on('connection', player=>{
       id : roomId,
       clients : []
     }
-    player.emit('gameCode', roomId);
+    player.emit('gameCode', lobbyRooms[roomId].id);
 
-    player.join(roomId);
+    player.join(lobbyRooms[roomId].id);
 
     player.number = 1;
     player.emit('init',1)
