@@ -1,0 +1,56 @@
+body {
+  background-color: rgb(216, 212, 212);
+
+}
+
+body.vote{
+margin-top: 500px;
+}
+.vote {
+  width: 400px;
+  padding: 1.5rem;
+  margin: 50px;
+  font-family: sans-serif;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.699);
+  border-radius: 10px;
+  
+}
+
+.voteTitle {
+  font-weight: bold;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+
+}
+
+/*Changes the cursor to show that you can click on option*/
+.voteOption:hover {
+  cursor: pointer;
+}
+
+/*Spaces the options so they not too close*/
+.voteOption:not(:last-child) {
+  margin-bottom: 0.5rem;
+}
+
+/*Change the colour of selected option*/
+.voteOption--selected .voteOption-fill {
+  background: #b59f3a
+}
+
+.voteOption--selected .voteOption-info {
+  font-weight: bold;
+}
+
+.voteOption-fill {
+  width: 50%;
+  height: 10px;
+  background: #dddddd;
+}
+
+.voteOption-info {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  font-size: 0.85rem;
+}
