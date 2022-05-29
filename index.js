@@ -128,18 +128,18 @@ io.on('connection', player=>{
   function PlayerJoinsGame(JoinDetails){
     const lobbyroomID = JoinDetails.gameID
 
-    if(lobbyRooms[lobbyroomID].clients.length === 0){
+    if(io.sockets.adapter.rooms[lobbyroomID].length === 0){
       player.emit('unknownGame')
       return;
-    }else if(lobbyRooms[lobbyroomID].clients.length >=1 ){
+    }else if(io.sockets.adapter.rooms[lobbyroomID].length >=1 ){
       player.emit('gameIsFull')
       return;
-    }
-    
-    player.join(lobbyroomID);
+    }else{
+      player.join(lobbyroomID);
 
     player.number = 2;
     player.emit('init',2)
+    }
   }
 
   function hostCreateNewGame() {
