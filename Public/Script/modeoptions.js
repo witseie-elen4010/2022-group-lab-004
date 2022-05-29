@@ -7,20 +7,20 @@ buttonSingle.addEventListener('click', function () {
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({action})
+    body: JSON.stringify({ action })
   }
   fetch('/api/logAction', options)
-  .then(result => result.json())
-  .catch((error) => {
-    console.error('Error:', error)
+    .then(result => result.json())
+    .catch((error) => {
+      console.error('Error:', error)
+    })
 })
-
 const randomButton = document.getElementById('multiplayerModeRandom')
 randomButton.addEventListener('click', function () {
-  location = String(location).replace("modeoption",  "multiPlayer")
+  location = String(location).replace('modeoption', 'multiPlayer')
 }, false)
 
 const chooseButton = document.getElementById('multiplayerModeChoose')
 chooseButton.addEventListener('click', function () {
-  location = String(location).replace("modeoption", "multiPlayer")
+  location = String(location).replace('modeoption', 'multiPlayer')
 }, false)
