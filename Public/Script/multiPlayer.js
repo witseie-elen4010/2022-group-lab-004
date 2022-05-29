@@ -1,6 +1,6 @@
 'use strict'
 
-const socket = io('http://localhost:3000')
+const socket = io('/')
 
 let Id
 let gameId
