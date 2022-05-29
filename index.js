@@ -126,8 +126,6 @@ io.on('connection', player=>{
   player.on('joinGame', PlayerJoinsGame);
 
   function PlayerJoinsGame(JoinDetails){
-
-    const clientID = JoinDetails.clientID
     const lobbyroomID = JoinDetails.gameID
 
     if(lobbyRooms[lobbyroomID].clients.length === 0){
