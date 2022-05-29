@@ -24,11 +24,9 @@
  /*Styling for the grid on the left. Which is the player*/
  /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
  .BoxGrid-container-Left{
- 
-     width: 295px;
-     height: 100px;
-     margin-bottom: 3000px;
-     margin-right: 600px;
+    width: 320px;
+    margin-bottom: 25%;
+    margin-top: 5%
  }
  
  .BoxGrid-container-Left div{
@@ -51,18 +49,26 @@
  /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
  /*Styling for the grid on the right. Which is the opponent*/
  /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
- #BoxGrid-container-Right {
-     display: grid;
-     grid-template-columns: repeat(5, 1fr);
-     grid-gap: 5px;
-     padding: 10px;
-     box-sizing: border-box;
-     margin-left: 600px;
-     margin-top: 60px;
-     
-     width: 50px;
-     height: 20px;
+ .BoxGrid-container-Right {
+    width: 320px;
+    margin-bottom: 25%;
+    margin-top: 5%
    }
+
+.BoxGrid-container-Right div{
+    display: flex;
+}
+
+.BoxGrid-container-Right .box {
+    width: 45px;
+     height: 45px;
+    border: 2px solid #3a3a3c;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 2px;
+}
  
  .boxes {
      border: 2px solid rgb(58, 58, 60);

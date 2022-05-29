@@ -73,6 +73,7 @@ socket.on('history', (game) => {
     console.log('This is True')
     // Update Game And Color Player Board and Key Board
     // ColorPlayerBoardAndKeyBoard()
+    changeBox()
     UpdateGamePlay()
   } else if (game[gameId].clients.some(function (u) {
     if (u.clientID === Opponent.clientID) { return true }
@@ -108,6 +109,7 @@ const boxGrid = [
   ['', '', '', '', '']
 ]
 
+let OpponentcurrentRow = 0
 let currentGridRow = 0
 let currentBox = 0
 let isGameOver = false
@@ -128,7 +130,7 @@ boxGrid.forEach((gridRow, gridRowIndex) => {
 /// //////////////////////////////////////////////////////////////////////////////////////////////
 // Creating a grid for the opponent
 /// //////////////////////////////////////////////////////////////////////////////////////////////
-
+/*
 const gridBoxes = document.getElementById('BoxGrid-container-Right')
 
 createBox()
@@ -142,8 +144,35 @@ function createBox () {
     gridBoxes.appendChild(boxes)
   }
 }
+*/
 /// //////////////////////////////////////////////////////////////////////////////////////////////
+// Opponent Grid
 
+const OpponenttileDisplay = document.querySelector('.BoxGrid-container-Right')
+
+const OpponentguessRows = [
+  ['', '', '', '', ''],
+  ['', '', '', '', ''],
+  ['', '', '', '', ''],
+  ['', '', '', '', ''],
+  ['', '', '', '', ''],
+  ['', '', '', '', '']
+]
+
+const opponentcurrentRow = 0
+const opponentcurrentTile = 0
+OpponentguessRows.forEach((opponentguessRow, guessRowIndex) => {
+  const rowElement = document.createElement('div')
+  rowElement.setAttribute('id', 'OpponentguessRow-' + guessRowIndex)
+
+  opponentguessRow.forEach((guess, guessIndex) => {
+    const tileElement = document.createElement('div')
+    tileElement.setAttribute('id', 'OpponentguessRow-' + guessRowIndex + '-box-' + guessIndex)
+    tileElement.classList.add('box')
+    rowElement.append(tileElement)
+  })
+  OpponenttileDisplay.appendChild(rowElement)
+})
 /// //////////////////////////////////////////////////////////////////////////////////////////////
 // Adds letter to the player's grid
 /// //////////////////////////////////////////////////////////////////////////////////////////////
@@ -451,6 +480,22 @@ const changeBox = () => {
     /// //////////////////////////////////////////////////////////////////////////////////////////////
   }
   scoreEvaluation()
+}
+
+const ColorOpponentBoard = () => {
+  const rowTiles = document.querySelector('#OpponentguessRow-' + OpponentcurrentRow).childNodes
+  rowTiles.forEach((tile, index) => {
+    if (MatchingIndex[index]) {
+      tile.classList.add('greenColour')
+    } else if (IncludedIndex[index]) {
+      tile.classList.add('yellowColour')
+    } else {
+      tile.classList.add('greyColour')
+    }
+  })
+  if (OpponentcurrentRow < 5) {
+    OpponentcurrentRow++
+  }
 }
 
 /// //////////////////////////////////////////////////////////////////////////////////////////////
