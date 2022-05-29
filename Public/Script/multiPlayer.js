@@ -21,6 +21,7 @@ socket.on('clientID', function (data) {
 })
 
 socket.on('GameFull', function () {
+  gameId = null
   window.alert('Game Room Is Full')
 })
 
