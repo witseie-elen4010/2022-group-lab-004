@@ -134,6 +134,20 @@ io.on('connection', player => {
       io.to(clientID).emit('InvalidRoom', lobbyroomID)
       return
     }
+
+    for (const client of lobbyRooms[lobbyroomID].clients) {
+      if (client.clientID === clientID) {
+        io.to(clientID).emit('AlreadyJoined')
+        return
+      }
+    }
+    /*
+    lobbyRooms[lobbyroomID].clients.forEach(client => {
+      if (client.clientID === clientID) {
+        io.to(clientID).emit('AlreadyJoined')
+      }
+    })
+    */
     console.log(lobbyRooms[lobbyroomID].clients.length)
     if (lobbyRooms[lobbyroomID].clients.length === 2) {
       io.to(clientID).emit('GameFull')

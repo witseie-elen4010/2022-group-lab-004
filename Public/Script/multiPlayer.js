@@ -30,6 +30,10 @@ socket.on('InvalidRoom', (ID) => {
   window.alert('Room with ID: ' + ID + 'Does not Exist')
 })
 
+socket.on('AlreadyJoined', () => {
+  window.alert('You Already Joined Please Wait For Another')
+})
+
 // Join And Game Create Event Listeners
 Newgamebutton.addEventListener('click', clickCreateNewGame)
 Joinbutton.addEventListener('click', clickJoinGame)
