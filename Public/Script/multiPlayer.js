@@ -8,6 +8,8 @@ let OpponentClientID
 
 const Newgamebutton = document.getElementById('createNewGame')
 const gameCodeDisplay = document.getElementById('gameCodeDisplay')
+const gameIdInput = document.getElementById('gameCodeInput')
+const Joinbutton = document.getElementById('JoinGame')
 
 // Server response For Client Connection.
 socket.on('clientID', function (data) {
@@ -18,6 +20,7 @@ socket.on('clientID', function (data) {
 })
 
 Newgamebutton.addEventListener('click', clickCreateNewGame)
+Joinbutton.addEventListener('click', clickJoinGame)
 
 function clickCreateNewGame () {
   socket.emit('createNewGame', Id)
@@ -30,6 +33,38 @@ socket.on('create', (game) => {
 
   console.log('Game with ID: ' + gameId + ' Successfully Created')
 })
+
+function clickJoinGame () {
+  if (gameId == null) {
+    gameId = gameIdInput.value
+  }
+  const JoinDetails = {
+    clientID: Id,
+    gameID: gameId
+  }
+  socket.emit('joinGame', JoinDetails)
+}
+
+socket.on('joinGame', (payLoad) => {
+  console.log(payLoad[gameId].clients)
+  payLoad[gameId].clients.forEach(function (client) {
+    if (client.clientID !== Id) {
+      OpponentClientID = client.clientID
+      console.log('Opponent ID: ' + OpponentClientID)
+    }
+  })
+
+  if (payLoad[gameId].clients.length >= 2) {
+    init()
+  } else {
+    alert('Waiting For The Other Player')
+  }
+})
+
+function init () {
+  initialScreen.style.display = 'none'
+  gameScreen.style.display = 'block'
+}
 
 const boxGridDisplay = document.querySelector('.BoxGrid-container-Left')
 const wordToGuess = 'PAUSE'

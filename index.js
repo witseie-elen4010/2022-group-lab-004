@@ -124,38 +124,27 @@ io.on('connection', player => {
   player.on('createNewGame', hostCreateNewGame)
   player.on('joinGame', PlayerJoinsGame)
 
-  function PlayerJoinsGame (gameCode) {
-    // returns current room from the socket object
-    const room = io.sockets.adapter.rooms[gameCode]
-
-    let allUsers
-    if (room) {
-      // gives all of object of the current room
-      allUsers = room.sockets
-    }
-
-    let numPlayers = 0
-    if (allUsers) {
-      numPlayers = Object.keys(allUsers).length
-    }
-
-    if (numPlayers === 0) {
-      player.emit('unknownGame')
+  function PlayerJoinsGame (JoinDetails) {
+    const clientID = JoinDetails.clientID
+    const lobbyroomID = JoinDetails.gameID
+    console.log(lobbyRooms[lobbyroomID].clients.length)
+    if (lobbyRooms[lobbyroomID].clients.length === 2) {
+      console.log('Game is Full')
       return
-    } else if (numPlayers > 1) {
-      player.emit('gameIsFull')
-      return
+    } else {
+      lobbyRooms[lobbyroomID].clients.push({
+        clientID
+      })
     }
 
-    lobbyRooms[player.id] = gameCode
-    player.join(gameCode)
-
-    player.number = 2
-    player.emit('init', 2)
+    console.log(lobbyRooms[lobbyroomID].clients.length)
+    lobbyRooms[lobbyroomID].clients.forEach(client => {
+      io.to(client.clientID).emit('joinGame', lobbyRooms)
+    })
   }
 
   function hostCreateNewGame () {
-    // Create a unique Socket.IO Room
+    // Generate Game Room Unique ID
     const roomId = makeid(7)
     lobbyRooms[roomId] = {
       id: roomId,
