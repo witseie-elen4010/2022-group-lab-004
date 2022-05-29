@@ -107,6 +107,7 @@ socket.on('Results', (game) => {
 function init () {
   initialScreen.style.display = 'none'
   gameScreen.style.display = 'block'
+  keyboardBoardID.style.display = 'block'
 }
 
 const boxGridDisplay = document.querySelector('.BoxGrid-container-Left')
@@ -295,6 +296,7 @@ const Keyboard = {
 
   setup () {
     this.properties.board = document.createElement('div')
+    this.properties.board.id = 'keyboardBoardID'
     this.properties.keysContainer = document.createElement('div')
 
     this.properties.board.classList.add('board')
