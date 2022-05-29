@@ -39,7 +39,7 @@ app.use(
     secret: 'Wordle cookie',
 
     cookie: {},
-    
+
     resave: false,
     saveUnitialized: true
 
@@ -217,6 +217,7 @@ io.on('connection', player => {
     })
   }
 })
+
 app.post('/api/endGameMulti', (req, res) => {
   res.redirect(req.body.href + '/resultMulti')
 })
@@ -226,30 +227,30 @@ app.get('/resultMulti', function (request, response) {
 })
 
 app.post('/api/logAction', (req, res) => {
-  if(req.body.action === 'startSingle') {
+  if (req.body.action === 'startSingle') {
     log.logStartSingle(req)
     res.json('done')
   }
-  if(req.body.action === 'startMultiRand') {
+  if (req.body.action === 'startMultiRand') {
     log.logStartMultiRand(req)
     res.json('done')
   }
-  if(req.body.action === 'guessWord') {
+  if (req.body.action === 'guessWord') {
     log.logGuessWord(req)
     res.json('done')
   }
-  if(req.body.action === 'startMultiChoose') {
+  if (req.body.action === 'startMultiChoose') {
     log.logStartMultiChoose(req)
     res.json('done')
   }
-  if(req.body.action === 'accessLog') {
+  if (req.body.action === 'accessLog') {
     log.logAccessLog(req)
-    .then(data => {
-      log.accessLog()
-      .then(actions => {
-        res.json(actions)
+      .then(data => {
+        log.accessLog()
+          .then(actions => {
+            res.json(actions)
+          })
       })
-    })
   }
 })
 

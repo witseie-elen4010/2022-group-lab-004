@@ -383,13 +383,12 @@ window.addEventListener('DOMContentLoaded', function () {
 // Adding colour to the Grid and the keyboard
 /// /////////////////////////////////////////////////////////////////////////////////////////////
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
-//Adding colour to the Grid and the keyboard
-/////////////////////////////////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////////////////////////////////
+// Adding colour to the Grid and the keyboard
+/// //////////////////////////////////////////////////////////////////////////////////////////////
 const changeBox = (guessedWord) => {
-
-  //get all the chidren of that row
-  const rowBox = document.querySelector('#gridRow-' + currentGridRow).childNodes//'#' makes sure to tell we are looking for an id
+  // get all the chidren of that row
+  const rowBox = document.querySelector('#gridRow-' + currentGridRow).childNodes// '#' makes sure to tell we are looking for an id
 
   // Remove letter once it has been coloured to prevent double colouring
 
@@ -461,14 +460,14 @@ const ColorOpponentBoard = () => {
   if (OpponentcurrentRow < 5) {
     OpponentcurrentRow++
   }
-    scoreEvaluation()
-    logGuess(guessedWord)
+  scoreEvaluation()
+  logGuess(guessedWord)
 }
 
 /// //////////////////////////////////////////////////////////////////////////////////////////////
 const initScoreValue = () => {
   const score = Score.getScore()
-  const data = {score}
+  const data = { score }
   const options = {
     method: 'post',
     headers: {
@@ -484,7 +483,6 @@ const initScoreValue = () => {
 }
 
 const scoreEvaluation = () => {
-
   const id = document.cookie
   let pass = { id }
   let options = {
@@ -512,27 +510,28 @@ const scoreEvaluation = () => {
           console.error('Error:', error)
         })
     })
-  .then(response => response.json())
-  .then(data => {
-    Score.incrementScore(data)
-    const score = Score.getScore()
-    const pass = {score}
-    options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(pass)
-    }
-    fetch('/api/scorePost', options)
-    .then(res => res.json())
-    .catch((error) => {
-      console.error('Error:', error)
+    .then(response => response.json())
+    .then(data => {
+      Score.incrementScore(data)
+      const score = Score.getScore()
+      const pass = { score }
+      options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(pass)
+      }
+      fetch('/api/scorePost', options)
+        .then(res => res.json())
+        .catch((error) => {
+          console.error('Error:', error)
+        })
     })
 }
 
 const endGame = () => {
-  letlocation = String(location).replace('multiPlayer', 'resultMulti')
+  location = String(location).replace('multiPlayer', 'resultMulti')
   const req = { location }
   const options = {
     method: 'POST',
@@ -550,7 +549,7 @@ const endGame = () => {
 const logGuess = (guessedWord) => {
   const word = guessedWord
   const action = 'guessWord'
-  const data = {word, action}
+  const data = { word, action }
   const options = {
     method: 'POST',
     headers: {
@@ -559,7 +558,7 @@ const logGuess = (guessedWord) => {
     body: JSON.stringify(data)
   }
   fetch('/api/logAction', options)
-  .catch((error) => {
-    console.error('Error:', error)
-  })
+    .catch((error) => {
+      console.error('Error:', error)
+    })
 }
