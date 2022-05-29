@@ -6,6 +6,7 @@ let Id
 let gameId
 let OpponentClientID
 
+// Getting Lobby Front Page Elements
 const Newgamebutton = document.getElementById('createNewGame')
 const gameCodeDisplay = document.getElementById('gameCodeDisplay')
 const gameIdInput = document.getElementById('gameCodeInput')
@@ -19,6 +20,7 @@ socket.on('clientID', function (data) {
   }
 })
 
+// Join And Game Create Event Listeners
 Newgamebutton.addEventListener('click', clickCreateNewGame)
 Joinbutton.addEventListener('click', clickJoinGame)
 
@@ -26,6 +28,7 @@ function clickCreateNewGame () {
   socket.emit('createNewGame', Id)
 }
 
+// Client receive created Game room.
 socket.on('create', (game) => {
   gameId = game.id
 
@@ -45,6 +48,7 @@ function clickJoinGame () {
   socket.emit('joinGame', JoinDetails)
 }
 
+// Joined Game state is Received by the Client
 socket.on('joinGame', (payLoad) => {
   console.log(payLoad[gameId].clients)
   payLoad[gameId].clients.forEach(function (client) {
@@ -57,11 +61,12 @@ socket.on('joinGame', (payLoad) => {
   if (payLoad[gameId].clients.length >= 2) {
     init()
   } else {
-    alert('Waiting For The Other Player')
+    window.alert('Waiting For The Other Player')
   }
 })
 
-socket.on('history', (game) => {
+// Client Receieve Game State With GuessedWord Evaluation
+socket.on('Results', (game) => {
   MatchingIndex = game[gameId].gameState.MatchingIndex
   IncludedIndex = game[gameId].gameState.IncludedIndex
 
@@ -72,7 +77,6 @@ socket.on('history', (game) => {
   if (game[gameId].gameState.clientID === Id) {
     console.log('This is True')
     // Update Game And Color Player Board and Key Board
-    // ColorPlayerBoardAndKeyBoard()
     changeBox()
     UpdateGamePlay()
   } else if (game[gameId].clients.some(function (u) {
@@ -84,18 +88,17 @@ socket.on('history', (game) => {
   }
 })
 
+// Change Display Style OF game screen and Initial Page
 function init () {
   initialScreen.style.display = 'none'
   gameScreen.style.display = 'block'
 }
 
 const boxGridDisplay = document.querySelector('.BoxGrid-container-Left')
-const wordToGuess = 'PAUSE'
 const clickedLetters = []
 
 let MatchingIndex = []
 let IncludedIndex = []
-const increment = 0
 
 /// //////////////////////////////////////////////////////////////////////////////////////////////
 // Creating the grid for the player.
@@ -127,25 +130,6 @@ boxGrid.forEach((gridRow, gridRowIndex) => {
 })
 /// //////////////////////////////////////////////////////////////////////////////////////////////
 
-/// //////////////////////////////////////////////////////////////////////////////////////////////
-// Creating a grid for the opponent
-/// //////////////////////////////////////////////////////////////////////////////////////////////
-/*
-const gridBoxes = document.getElementById('BoxGrid-container-Right')
-
-createBox()
-
-function createBox () {
-  for (let index = 0; index < 30; index++) {
-    const boxes = document.createElement('div')
-    boxes.classList.add('boxes')
-    boxes.setAttribute('id', index + 1)
-    oppponentGrid.push(boxes)
-    gridBoxes.appendChild(boxes)
-  }
-}
-*/
-/// //////////////////////////////////////////////////////////////////////////////////////////////
 // Opponent Grid
 
 const OpponenttileDisplay = document.querySelector('.BoxGrid-container-Right')
@@ -159,8 +143,6 @@ const OpponentguessRows = [
   ['', '', '', '', '']
 ]
 
-const opponentcurrentRow = 0
-const opponentcurrentTile = 0
 OpponentguessRows.forEach((opponentguessRow, guessRowIndex) => {
   const rowElement = document.createElement('div')
   rowElement.setAttribute('id', 'OpponentguessRow-' + guessRowIndex)
@@ -191,35 +173,14 @@ const isCorrectGuess = () => {
 }
 
 const WordEvaluation = (guessedWord) => {
-  const data = { guessedWord }
-
   const payLoad = {
     clientID: Id,
     gameID: gameId,
     guessedWord
   }
 
+  // Sends Guessword for Evaluation
   socket.emit('Evaluate', payLoad)
-
-  const options = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(data)
-  }
-
-  fetch('/api', options)
-    .then(response => response.json())
-    .then(data => {
-      // MatchingIndex = data.MatchingIndex
-    // IncludedIndex = data.IncludedIndex
-    // changeBox()
-      // UpdateGamePlay()
-    })
-    .catch((error) => {
-      console.error('Error:', error)
-    })
 }
 
 const GuessedWordValidation = (guessedWord) => {
@@ -420,7 +381,7 @@ const changeBox = () => {
   })
 
   guess.forEach((guess, index) => {
-    if (IncludedIndex[index] == true) {
+    if (IncludedIndex[index] === true) {
       guess.styling = 'yellowColour'
       Score.incrementScore(20)
     }
@@ -428,7 +389,7 @@ const changeBox = () => {
 
   // Check if each guess is a match
   guess.forEach((guess, index) => {
-    if (MatchingIndex[index] == true) {
+    if (MatchingIndex[index] === true) {
       guess.styling = 'greenColour'
       Score.incrementScore(30)
     }
@@ -438,10 +399,10 @@ const changeBox = () => {
     setTimeout(() => {
       box.classList.add('flip')
       box.classList.add('greyColour')
-      if (IncludedIndex[index] == true) {
+      if (IncludedIndex[index] === true) {
         box.classList.add('yellowColour')
       }
-      if (MatchingIndex[index] == true) {
+      if (MatchingIndex[index] === true) {
         box.classList.add('greenColour')
       }
     }, 250 * index)
@@ -452,11 +413,11 @@ const changeBox = () => {
     clickedLetters[ind].classList.add('greyColour')
 
     const remainder = ind % 5 // limiting the indicies to a maximum of 5
-    if (IncludedIndex[remainder] == true) {
+    if (IncludedIndex[remainder] === true) {
       clickedLetters[ind].classList.remove('greenColour') // removing any green so that it will not overwrite the yellow
       clickedLetters[ind].classList.add('yellowColour')
     }
-    if (MatchingIndex[remainder] == true) {
+    if (MatchingIndex[remainder] === true) {
       clickedLetters[ind].classList.add('greenColour')
     }
   }
@@ -535,7 +496,7 @@ const scoreEvaluation = () => {
 }
 
 const endGame = () => {
-  location = String(location).replace('multiPlayer', 'resultMulti')
+  letlocation = String(location).replace('multiPlayer', 'resultMulti')
   const req = { location }
   const options = {
     method: 'POST',

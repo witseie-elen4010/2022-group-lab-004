@@ -63,7 +63,7 @@ app.get('/multiPlayer', function (request, response) {
 })
 
 app.get('/', function (req, res) {
-  res.sendFile(path.join(__dirname + '/Views/Register.html'))
+  res.sendFile(path.join(__dirname, 'Views', 'Register.html'))
 })
 
 app.post('/api', (req, res) => {
@@ -157,16 +157,16 @@ io.on('connection', player => {
     player.emit('create', lobbyRooms[roomId])
   }
 
-  function ClientGuessedWord (payLoad) {
-    const clientID = payLoad.clientID
-    const gameID = payLoad.gameID
-    const guessedWord = payLoad.guessedWord
+  function ClientGuessedWord (GuessingInfo) {
+    const clientID = GuessingInfo.clientID
+    const gameID = GuessingInfo.gameID
+    const guessedWord = GuessingInfo.guessedWord
 
     let MatchingIndex = []
     let IncludedIndex = []
     let EvaluationResults = []
 
-    EvaluationResults = mod.EvaluateGuess(payLoad.guessedWord)
+    EvaluationResults = mod.EvaluateGuess(guessedWord)
 
     MatchingIndex = EvaluationResults[0]
     IncludedIndex = EvaluationResults[1]
@@ -177,27 +177,14 @@ io.on('connection', player => {
       clientID
     }
 
-    /*
-    history[socket.id][1].push(MatchingIndex);
-    history[socket.id][2].push(IncludedIndex);
-    history[socket.id][3].push(payLoad.guessedWord);
-   */
     lobbyRooms[gameID].gameState = gameState
 
-    console.log(payLoad.guessedWord)
     console.log(lobbyRooms[gameID].gameState)
 
-    // socket.broadcast.emit('MatchResults', MatchingIndex)
-    // socket.broadcast.emit('IncludedResults', IncludedIndex)
-
-    io.sockets.emit('MatchResults', MatchingIndex)
-    io.sockets.emit('IncludedResults', IncludedIndex)
-    io.sockets.emit('clientIDplayer', player.id)
-    // io.sockets.emit('history', games)
     lobbyRooms[gameID].clients.forEach(client => {
-      io.to(client.clientID).emit('history', lobbyRooms)
+      // Sending Game With Results To the Room Game Room Clients
+      io.to(client.clientID).emit('Results', lobbyRooms)
     })
-    // console.log(history)
 
     player.on('disconnect', () => {
       console.log('Client With ID: ' + player.id + 'disconnected')
