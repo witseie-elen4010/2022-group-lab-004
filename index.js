@@ -136,16 +136,12 @@ io.on('connection', player=>{
     }else if(lobbyRooms[lobbyroomID].clients.length >=1 ){
       player.emit('gameIsFull')
       return;
-    }else{
-      lobbyRooms[lobbyroomID].clients.push({
-        clientID
-      })
-      player.number = 2;
-      player.emit('init',2)
     }
-    lobbyRooms[lobbyroomID].clients.forEach(client => {
-        io.to(client.clientID).emit('joinGame', lobbyRooms)
-      })
+    
+    player.join(lobbyroomID);
+
+    player.number = 2;
+    player.emit('init',2)
   }
 
   function hostCreateNewGame() {
