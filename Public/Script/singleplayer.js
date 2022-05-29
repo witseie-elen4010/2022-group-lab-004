@@ -67,7 +67,7 @@ const WordEvaluation = (guessedWord) => {
     .then(data => {
       MatchingIndex = data.MatchingIndex
       IncludedIndex = data.IncludedIndex
-      changeBox()
+      changeBox(guessedWord)
       UpdateGamePlay()
 
     })
@@ -265,7 +265,7 @@ window.addEventListener('DOMContentLoaded', function () {
 
 
 // this will add colour to the grid and the keyboard
-const changeBox = () => {
+const changeBox = (guessedWord) => {
 
   //get all the chidren of that row
   const rowBox = document.querySelector('#gridRow-' + currentGridRow).childNodes//'#' makes sure to tell we are looking for an id
@@ -341,12 +341,12 @@ const changeBox = () => {
 
   }
   scoreEvaluation()
+  logGuess(guessedWord)
 }
 
 const initScoreValue = () => {
-  const id = document.cookie
   const score = Score.getScore()
-  const data = {id, score}
+  const data = {score}
   const options = {
     method: 'post',
     headers: {
@@ -362,21 +362,18 @@ const initScoreValue = () => {
 }
 
 const scoreEvaluation = () => {
-  const id = document.cookie
-  let pass = {id}
   let options = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(pass)
+    }
   }
   fetch('/api/scoreGet', options)
   .then(response => response.json())
   .then(data => {
     Score.incrementScore(data)
     const score = Score.getScore()
-    pass = {id, score}
+    const pass = {score}
     options = {
       method: 'POST',
       headers: {
@@ -406,6 +403,23 @@ const endGame = () => {
     body: JSON.stringify(req)
   }
   fetch('/api/endGame', options)
+  .catch((error) => {
+    console.error('Error:', error)
+  })
+}
+
+const logGuess = (guessedWord) => {
+  const word = guessedWord
+  const action = 'guessWord'
+  const data = {word, action}
+  const options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  }
+  fetch('/api/logAction', options)
   .catch((error) => {
     console.error('Error:', error)
   })

@@ -2,14 +2,11 @@
 
 const displayResults = document.getElementById('displayResults')
 let score = 0
-const id = document.cookie
-const data = {id}
 let options = {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json'
-  },
-  body: JSON.stringify(data)
+  }
 }
 fetch('/api/scoreGet', options)
 .then(response => response.json())
@@ -23,3 +20,8 @@ fetch('/api/scoreGet', options)
 .catch((error) => {
   console.error('Error:', error)
 })
+
+const accessLogButton = document.getElementById('accessLogButton')
+accessLogButton.addEventListener('click', function () {
+  location = String(location).replace('result', 'log')
+}, false)
