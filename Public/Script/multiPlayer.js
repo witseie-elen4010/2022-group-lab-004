@@ -61,6 +61,27 @@ socket.on('joinGame', (payLoad) => {
   }
 })
 
+socket.on('history', (game) => {
+  MatchingIndex = game[gameId].gameState.MatchingIndex
+  IncludedIndex = game[gameId].gameState.IncludedIndex
+
+  const Opponent = {
+    clientID: OpponentClientID
+  }
+
+  if (game[gameId].gameState.clientID === Id) {
+    console.log('This is True')
+    // Update Game And Color Player Board and Key Board
+    // ColorPlayerBoardAndKeyBoard()
+    UpdateGamePlay()
+  } else if (game[gameId].clients.some(function (u) {
+    if (u.clientID === Opponent.clientID) { return true }
+    return false
+  })) {
+    // Color The Opponent Board
+  }
+})
+
 function init () {
   initialScreen.style.display = 'none'
   gameScreen.style.display = 'block'
@@ -143,6 +164,14 @@ const isCorrectGuess = () => {
 const WordEvaluation = (guessedWord) => {
   const data = { guessedWord }
 
+  const payLoad = {
+    clientID: Id,
+    gameID: gameId,
+    guessedWord
+  }
+
+  socket.emit('Evaluate', payLoad)
+
   const options = {
     method: 'POST',
     headers: {
@@ -154,10 +183,10 @@ const WordEvaluation = (guessedWord) => {
   fetch('/api', options)
     .then(response => response.json())
     .then(data => {
-      MatchingIndex = data.MatchingIndex
-      IncludedIndex = data.IncludedIndex
-      changeBox()
-      UpdateGamePlay()
+      // MatchingIndex = data.MatchingIndex
+    // IncludedIndex = data.IncludedIndex
+    // changeBox()
+      // UpdateGamePlay()
     })
     .catch((error) => {
       console.error('Error:', error)

@@ -47,6 +47,10 @@ app.use('/', modeRoute)
 app.use('/', lobbyRoute)
 app.use('/', loginRoute)
 
+mod.RandomSolutionWord()
+solutionWord = mod.getSolutionWord()
+console.log(solutionWord)
+
 app.get('/singleplayer', function (request, response) {
   mod.RandomSolutionWord()
   solutionWord = mod.getSolutionWord()
@@ -55,9 +59,6 @@ app.get('/singleplayer', function (request, response) {
 })
 
 app.get('/multiPlayer', function (request, response) {
-  mod.RandomSolutionWord()
-  solutionWord = mod.getSolutionWord()
-  console.log(solutionWord)
   response.sendFile(path.join(__dirname, 'Views', 'multiPlayer.html'))
 })
 
@@ -123,6 +124,7 @@ io.on('connection', player => {
   io.sockets.emit('clientID', player.id)
   player.on('createNewGame', hostCreateNewGame)
   player.on('joinGame', PlayerJoinsGame)
+  player.on('Evaluate', ClientGuessedWord)
 
   function PlayerJoinsGame (JoinDetails) {
     const clientID = JoinDetails.clientID
@@ -153,6 +155,53 @@ io.on('connection', player => {
     }
     console.log(lobbyRooms[roomId].id)
     player.emit('create', lobbyRooms[roomId])
+  }
+
+  function ClientGuessedWord (payLoad) {
+    const clientID = payLoad.clientID
+    const gameID = payLoad.gameID
+    const guessedWord = payLoad.guessedWord
+
+    let MatchingIndex = []
+    let IncludedIndex = []
+    let EvaluationResults = []
+
+    EvaluationResults = mod.EvaluateGuess(payLoad.guessedWord)
+
+    MatchingIndex = EvaluationResults[0]
+    IncludedIndex = EvaluationResults[1]
+
+    const gameState = {
+      MatchingIndex,
+      IncludedIndex,
+      clientID
+    }
+
+    /*
+    history[socket.id][1].push(MatchingIndex);
+    history[socket.id][2].push(IncludedIndex);
+    history[socket.id][3].push(payLoad.guessedWord);
+   */
+    lobbyRooms[gameID].gameState = gameState
+
+    console.log(payLoad.guessedWord)
+    console.log(lobbyRooms[gameID].gameState)
+
+    // socket.broadcast.emit('MatchResults', MatchingIndex)
+    // socket.broadcast.emit('IncludedResults', IncludedIndex)
+
+    io.sockets.emit('MatchResults', MatchingIndex)
+    io.sockets.emit('IncludedResults', IncludedIndex)
+    io.sockets.emit('clientIDplayer', player.id)
+    // io.sockets.emit('history', games)
+    lobbyRooms[gameID].clients.forEach(client => {
+      io.to(client.clientID).emit('history', lobbyRooms)
+    })
+    // console.log(history)
+
+    player.on('disconnect', () => {
+      console.log('Client With ID: ' + player.id + 'disconnected')
+    })
   }
 })
 app.post('/api/endGameMulti', (req, res) => {
