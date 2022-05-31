@@ -225,7 +225,7 @@ app.post('/api/endGameMulti', (req, res) => {
 app.get('/resultMulti', function (request, response) {
   response.sendFile(path.join(__dirname, 'Views', 'resultMulti.html'))
 })
-})
+
 
 app.post('/api/logAction', (req, res) => {
   if (req.body.action === 'startSingle') {
