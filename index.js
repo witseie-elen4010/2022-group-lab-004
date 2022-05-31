@@ -200,7 +200,8 @@ io.on('connection', player => {
     const gameState = {
       MatchingIndex,
       IncludedIndex,
-      clientID
+      clientID,
+      guessedWord
     }
 
     lobbyRooms[gameID].gameState = gameState
