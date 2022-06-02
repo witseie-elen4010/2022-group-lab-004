@@ -16,6 +16,7 @@ fetch('/api/scoreGet', options)
   const text = document.createTextNode(`${score}`)
   displayText.appendChild(text)
   displayResults.appendChild(displayText)
+  // Add opponents score
 })
 .catch((error) => {
   console.error('Error:', error)
@@ -23,5 +24,5 @@ fetch('/api/scoreGet', options)
 
 const accessLogButton = document.getElementById('accessLogButton')
 accessLogButton.addEventListener('click', function () {
-  location = String(location).replace('result', 'log')
+  location = String(location).replace('resultMulti', 'log')
 }, false)
