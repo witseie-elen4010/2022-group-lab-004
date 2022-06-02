@@ -25,3 +25,8 @@ const accessLogButton = document.getElementById('accessLogButton')
 accessLogButton.addEventListener('click', function () {
   location = String(location).replace('result', 'log')
 }, false)
+
+const playAgainButton = document.getElementById('playAgain')
+playAgainButton.addEventListener('click', function () {
+  location = String(location).replace('result', 'singleplayer')
+}, false)
