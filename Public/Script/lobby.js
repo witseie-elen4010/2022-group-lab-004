@@ -31,9 +31,12 @@ const gameCodeDisplay = document.getElementById('gameCodeDisplay')
 
 
 const LeaveLobbybutton = document.getElementById('LeaveLobby')
-LeaveLobbybutton.addEventListener('click',  function () {
+LeaveLobbybutton.addEventListener('click', clickLeaveLobby)
+
+function clickLeaveLobby() {
+  socket.emit('LeaveTheLobby')
   location = String(location).replace("multiPlayer", "modeoption")
-}, false)
+}
 
 
 Newgamebutton.addEventListener('click', clickCreateNewGame);

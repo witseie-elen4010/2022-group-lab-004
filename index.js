@@ -133,6 +133,16 @@ io.on('connection', player => {
   player.on('joinGame', PlayerJoinsGame)
   player.on('Evaluate', ClientGuessedWord)
 
+  player.on('LeaveTheLobby', playerLeavesTheLobby)
+
+  function playerLeavesTheLobby () {
+  
+    player.disconnect()
+    console.log('Client With ID: ' + player.id + ' disconnected')
+    
+  }
+  
+
   function PlayerJoinsGame (JoinDetails) {
     const clientID = JoinDetails.clientID
     const lobbyroomID = JoinDetails.gameID
