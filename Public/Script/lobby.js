@@ -28,15 +28,16 @@ const Newgamebutton = document.getElementById('createNewGame')
 const Joinbutton = document.getElementById('JoinGame')
 const gameIdInput = document.getElementById('gameCodeInput')
 const gameCodeDisplay = document.getElementById('gameCodeDisplay')
+
+
 const LeaveLobbybutton = document.getElementById('LeaveLobby')
+LeaveLobbybutton.addEventListener('click',  function () {
+  location = String(location).replace("multiPlayer", "modeoption")
+}, false)
 
 
 Newgamebutton.addEventListener('click', clickCreateNewGame);
 Joinbutton.addEventListener('click', clickJoinGame);
-
-LeaveLobbybutton.addEventListener('click',  function () {
-  location = String(location).replace("multiPlayer", "modeoption")
-}, false)
 
 function clickCreateNewGame (){
   socket.emit('createNewGame')

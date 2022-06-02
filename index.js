@@ -127,7 +127,7 @@ app.get('/result', function (request, response) {
 })
 
 io.on('connection', player => {
-  console.log('We have a new client:' + player.id)
+  console.log('We have a new client: ' + player.id)
   io.sockets.emit('clientID', player.id)
   player.on('createNewGame', hostCreateNewGame)
   player.on('joinGame', PlayerJoinsGame)
