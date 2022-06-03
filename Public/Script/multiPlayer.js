@@ -146,7 +146,7 @@ boxGrid.forEach((gridRow, gridRowIndex) => {
 })
 /// //////////////////////////////////////////////////////////////////////////////////////////////
 
-// Opponent Grid
+// First Opponent Grid
 
 const OpponenttileDisplay = document.querySelector('.BoxGrid-container-Right')
 
@@ -171,6 +171,32 @@ OpponentguessRows.forEach((opponentguessRow, guessRowIndex) => {
   })
   OpponenttileDisplay.appendChild(rowElement)
 })
+
+// Second Opponent Grid
+const SecondOpponenttileDisplay = document.querySelector('.BoxGrid-container-Right2')
+
+const SecondOpponentguessRows = [
+  ['', '', '', '', ''],
+  ['', '', '', '', ''],
+  ['', '', '', '', ''],
+  ['', '', '', '', ''],
+  ['', '', '', '', ''],
+  ['', '', '', '', '']
+]
+
+SecondOpponentguessRows.forEach((opponentguessRow, guessRowIndex) => {
+  const rowElement = document.createElement('div')
+  rowElement.setAttribute('id', 'SecondOpponentguessRow-' + guessRowIndex)
+
+  opponentguessRow.forEach((guess, guessIndex) => {
+    const tileElement = document.createElement('div')
+    tileElement.setAttribute('id', 'SecondOpponentguessRow-' + guessRowIndex + '-box-' + guessIndex)
+    tileElement.classList.add('box')
+    rowElement.append(tileElement)
+  })
+  SecondOpponenttileDisplay.appendChild(rowElement)
+})
+
 /// //////////////////////////////////////////////////////////////////////////////////////////////
 // Adds letter to the player's grid
 /// //////////////////////////////////////////////////////////////////////////////////////////////
