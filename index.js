@@ -156,7 +156,7 @@ io.on('connection', player => {
     })
     */
     console.log(lobbyRooms[lobbyroomID].clients.length)
-    if (lobbyRooms[lobbyroomID].clients.length === 2) {
+    if (lobbyRooms[lobbyroomID].clients.length === 3) {
       io.to(clientID).emit('GameFull')
       return
     } else {

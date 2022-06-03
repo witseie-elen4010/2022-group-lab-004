@@ -4,7 +4,7 @@ const socket = io('/')
 
 let Id
 let gameId
-let OpponentClientID
+const OpponentClientID = []
 
 // Getting Lobby Front Page Elements
 const Newgamebutton = document.getElementById('createNewGame')
