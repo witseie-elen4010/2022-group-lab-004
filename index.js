@@ -34,17 +34,22 @@ app.set('views', './Views')
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
+const sessionMiddleware = session({
+  secret: 'Wordle cookie',
+
+  cookie: {},
+
+  resave: false,
+  saveUnitialized: true
+
+})
+
 app.use(
-  session({
-    secret: 'Wordle cookie',
-
-    cookie: {},
-
-    resave: false,
-    saveUnitialized: true
-
-  })
+  sessionMiddleware
 )
+
+const wrap = middleware => (socket, next) => middleware(socket.request, {}, next)
+io.use(wrap(sessionMiddleware))
 app.use('/cdn', express.static('Public'))
 app.use('/', homeRoute)
 app.use('/', modeRoute)
@@ -127,6 +132,7 @@ app.get('/result', function (request, response) {
 })
 
 io.on('connection', player => {
+  // console.log(User)
   console.log('We have a new client:' + player.id)
   io.sockets.emit('clientID', player.id)
   player.on('createNewGame', hostCreateNewGame)
