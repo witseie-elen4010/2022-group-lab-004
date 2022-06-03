@@ -16,7 +16,7 @@ const Joinbutton = document.getElementById('JoinGame')
 // Server response For Client Connection.
 socket.on('clientID', function (data) {
   if (Id === undefined) {
-    Id = data
+    Id = data.playerID
     username = data.user
     console.log(Id)
     console.log(username)
@@ -61,21 +61,26 @@ function clickJoinGame () {
   }
   const JoinDetails = {
     clientID: Id,
-    gameID: gameId
+    gameID: gameId,
+    ClientName: username
   }
   socket.emit('joinGame', JoinDetails)
 }
 
 // Joined Game state is Received by the Client
 socket.on('joinGame', (payLoad) => {
-  console.log(payLoad[gameId].clients)
-  payLoad[gameId].clients.forEach(function (client) {
-    if (client.clientID !== Id) {
-      OpponentClientID.push(client.clientID)
-      console.log('Opponent ID: ' + OpponentClientID)
-    }
-  })
+  if (payLoad[gameId].clients.length === 3) {
+    payLoad[gameId].clients.forEach(function (client) {
+      if (client.clientID !== Id) {
+        OpponentClientID.push(client)
+        console.log('Opponent ID: ' + OpponentClientID)
+      }
+    })
 
+    document.getElementById('CurrentPlayer').innerHTML = `You ( ${username} )`
+    document.getElementById('Opponent1').innerHTML = `${OpponentClientID[0].clientName}`
+    document.getElementById('Opponent2').innerHTML = `${OpponentClientID[1].clientName}`
+  }
   if (payLoad[gameId].clients.length >= 3) {
     init()
   } else {
@@ -95,7 +100,7 @@ socket.on('Results', (game) => {
   if (game[gameId].gameState.clientID === Id) {
     console.log('This is True')
     // Update Game And Color Player Board and Key Board
-    changeBox()
+    changeBox(JSON.stringify(game[gameId].gameState.guessedWord))
     UpdateGamePlay()
   } else {
     if (game[gameId].gameState.clientID === Opponent.clientID1) {

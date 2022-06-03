@@ -148,6 +148,7 @@ io.on('connection', player => {
   function PlayerJoinsGame (JoinDetails) {
     const clientID = JoinDetails.clientID
     const lobbyroomID = JoinDetails.gameID
+    const clientName = JoinDetails.ClientName
 
     if (lobbyRooms[lobbyroomID] === undefined) {
       io.to(clientID).emit('InvalidRoom', lobbyroomID)
@@ -173,7 +174,8 @@ io.on('connection', player => {
       return
     } else {
       lobbyRooms[lobbyroomID].clients.push({
-        clientID
+        clientID,
+        clientName
       })
     }
 
