@@ -179,7 +179,6 @@ io.on('connection', player => {
       })
     }
 
-    console.log(lobbyRooms[lobbyroomID].clients.length)
     lobbyRooms[lobbyroomID].clients.forEach(client => {
       io.to(client.clientID).emit('joinGame', lobbyRooms)
     })

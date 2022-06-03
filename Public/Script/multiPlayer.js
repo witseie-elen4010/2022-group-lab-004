@@ -81,10 +81,10 @@ socket.on('joinGame', (payLoad) => {
     document.getElementById('Opponent1').innerHTML = `${OpponentClientID[0].clientName}`
     document.getElementById('Opponent2').innerHTML = `${OpponentClientID[1].clientName}`
   }
-  if (payLoad[gameId].clients.length >= 3) {
+  if (payLoad[gameId].clients.length === 3) {
     init()
   } else {
-    window.alert('Waiting For The Other Player')
+    window.alert('Waiting For The Other Player(s)')
   }
 })
 
