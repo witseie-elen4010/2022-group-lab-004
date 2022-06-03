@@ -68,12 +68,12 @@ socket.on('joinGame', (payLoad) => {
   console.log(payLoad[gameId].clients)
   payLoad[gameId].clients.forEach(function (client) {
     if (client.clientID !== Id) {
-      OpponentClientID.push(client.clientID)
+      OpponentClientID = client.clientID
       console.log('Opponent ID: ' + OpponentClientID)
     }
   })
 
-  if (payLoad[gameId].clients.length >= 3) {
+  if (payLoad[gameId].clients.length >= 2) {
     init()
   } else {
     window.alert('Waiting For The Other Player')
@@ -86,21 +86,20 @@ socket.on('Results', (game) => {
   IncludedIndex = game[gameId].gameState.IncludedIndex
 
   const Opponent = {
-    clientID1: OpponentClientID[0],
-    clientID2: OpponentClientID[1]
+    clientID: OpponentClientID
   }
+
   if (game[gameId].gameState.clientID === Id) {
     console.log('This is True')
     // Update Game And Color Player Board and Key Board
     changeBox(JSON.stringify(game[gameId].gameState.guessedWord))
     UpdateGamePlay()
-  } else {
-    if (game[gameId].gameState.clientID === Opponent.clientID1) {
-      ColorOpponentBoard()
-    }
-    if (game[gameId].gameState.clientID === Opponent.clientID2) {
-      SecondColorOpponentBoard()
-    }
+  } else if (game[gameId].clients.some(function (u) {
+    if (u.clientID === Opponent.clientID) { return true }
+    return false
+  })) {
+    // Color The Opponent Board
+    ColorOpponentBoard()
   }
 })
 
