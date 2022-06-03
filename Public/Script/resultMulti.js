@@ -26,3 +26,8 @@ const accessLogButton = document.getElementById('accessLogButton')
 accessLogButton.addEventListener('click', function () {
   location = String(location).replace('resultMulti', 'log')
 }, false)
+
+const returnLobby = document.getElementById('returnLobby')
+returnLobby.addEventListener('click', function () {
+  location = String(location).replace('resultMulti', 'multiPlayer')
+}, false)

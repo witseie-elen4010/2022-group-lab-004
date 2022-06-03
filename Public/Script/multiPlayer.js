@@ -92,7 +92,7 @@ socket.on('Results', (game) => {
   if (game[gameId].gameState.clientID === Id) {
     console.log('This is True')
     // Update Game And Color Player Board and Key Board
-    changeBox()
+    changeBox(JSON.stringify(game[gameId].gameState.guessedWord))
     UpdateGamePlay()
   } else if (game[gameId].clients.some(function (u) {
     if (u.clientID === Opponent.clientID) { return true }
@@ -443,6 +443,7 @@ const changeBox = (guessedWord) => {
   }
 
   scoreEvaluation()
+  logGuess(guessedWord)
 }
 
 // Color The Opponent Board
@@ -460,8 +461,6 @@ const ColorOpponentBoard = () => {
   if (OpponentcurrentRow < 5) {
     OpponentcurrentRow++
   }
-  scoreEvaluation()
-  logGuess(guessedWord)
 }
 
 /// //////////////////////////////////////////////////////////////////////////////////////////////
