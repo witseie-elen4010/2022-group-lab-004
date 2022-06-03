@@ -129,6 +129,7 @@ const boxGrid = [
 ]
 
 let OpponentcurrentRow = 0
+let SecondOpponentcurrentRow = 0
 let currentGridRow = 0
 let currentBox = 0
 let isGameOver = false
@@ -486,6 +487,23 @@ const ColorOpponentBoard = () => {
   })
   if (OpponentcurrentRow < 5) {
     OpponentcurrentRow++
+  }
+}
+
+// Color Second Opponent Board
+const SecondColorOpponentBoard = () => {
+  const rowTiles = document.querySelector('#SecondOpponentguessRow-' + SecondOpponentcurrentRow).childNodes
+  rowTiles.forEach((tile, index) => {
+    if (MatchingIndex[index]) {
+      tile.classList.add('greenColour')
+    } else if (IncludedIndex[index]) {
+      tile.classList.add('yellowColour')
+    } else {
+      tile.classList.add('greyColour')
+    }
+  })
+  if (SecondOpponentcurrentRow < 5) {
+    SecondOpponentcurrentRow++
   }
 }
 
