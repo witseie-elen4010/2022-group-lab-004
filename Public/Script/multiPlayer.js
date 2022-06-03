@@ -4,6 +4,7 @@ const socket = io('/')
 
 let Id
 let gameId
+let username
 const OpponentClientID = []
 
 // Getting Lobby Front Page Elements
@@ -16,7 +17,9 @@ const Joinbutton = document.getElementById('JoinGame')
 socket.on('clientID', function (data) {
   if (Id === undefined) {
     Id = data
+    username = data.user
     console.log(Id)
+    console.log(username)
   }
 })
 

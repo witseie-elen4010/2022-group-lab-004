@@ -132,9 +132,15 @@ app.get('/result', function (request, response) {
 })
 
 io.on('connection', player => {
-  // console.log(User)
+  const user = player.request.session.user
+
+  const User = {
+    user,
+    playerID: player.id
+  }
+
   console.log('We have a new client:' + player.id)
-  io.sockets.emit('clientID', player.id)
+  io.sockets.emit('clientID', User)
   player.on('createNewGame', hostCreateNewGame)
   player.on('joinGame', PlayerJoinsGame)
   player.on('Evaluate', ClientGuessedWord)
