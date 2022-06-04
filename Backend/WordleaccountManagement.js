@@ -83,7 +83,7 @@ module.exports.LoginUser = async function (userdetails, req, res) {
   for (let i = 0; i < users.length; i++) {
     if ((users[i].username === user.username && bcrypt.compareSync(user.password, users[i].password))) {
       found = true
-      wordleAccountProcess.setCookie(user, req, res)
+      wordleAccountProcess.setCookie(user, req)
       res.redirect('/home')
       break
     } else {
@@ -97,7 +97,7 @@ module.exports.LoginUser = async function (userdetails, req, res) {
   }
 }
 
-module.exports.LogoutUser = async function (user, req, res) {
+module.exports.LogoutUser = async function (req, res) {
   req.session.user = null
   res.redirect('/login')
 }
