@@ -30,15 +30,6 @@ const gameIdInput = document.getElementById('gameCodeInput')
 const gameCodeDisplay = document.getElementById('gameCodeDisplay')
 
 
-const LeaveLobbybutton = document.getElementById('LeaveLobby')
-LeaveLobbybutton.addEventListener('click', clickLeaveLobby)
-
-function clickLeaveLobby() {
-  socket.emit('LeaveTheLobby')
-  location = String(location).replace("multiPlayer", "modeoption")
-}
-
-
 Newgamebutton.addEventListener('click', clickCreateNewGame);
 Joinbutton.addEventListener('click', clickJoinGame);
 
