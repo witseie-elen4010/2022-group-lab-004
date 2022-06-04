@@ -7,6 +7,9 @@
 </head>
 <body>
     <div class="container-fluid">
+        <form action="/api/logout-user" method="post">
+            <button id="logout_button" type="submit" class="btn btn-success">Logout</button>  
+       </form>
         <div class="row justify-content-center">
             <div class="col-auto">
                 <h1>WordleVersus</h1>
@@ -31,7 +34,7 @@
     </div>
     <div class="container">
         <div class="row">
-            <button id="startButton" type="button" class="btn btn-success">Start</button>
+            <button id="startButton" type="button" class="btn btn-success">Start</button>    
         </div>
     </div>
     <script type="module" src="/cdn/Script/homepage.js"></script>
