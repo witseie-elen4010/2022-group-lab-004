@@ -80,7 +80,7 @@ const v = new Vote(
   "Who do you want to be the leader?"
 );
 
-const displayResults = document.getElementById('car')
+const displayResults = document.getElementById('name')
 const action = 'accessLog'
 let options = {
   method: 'POST',
