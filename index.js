@@ -24,6 +24,9 @@ const mod = require('./WordList.js')
 const lobbyRoute = require('./Routes/lobbyRoute')
 const loginRoute = require('./Routes/loginRoute')
 
+const fs = require("fs").promises;// interacts with json
+const optionsFile = path.join(__dirname, "options.json");
+
 const { makeid } = require('./utils')
 
 let solutionWord
@@ -60,6 +63,13 @@ app.get('/singleplayer', function (request, response) {
   solutionWord = mod.getSolutionWord()
   console.log(solutionWord)
   response.sendFile(path.join(__dirname, 'Views', 'singleplayer.html'))
+})
+
+app.get('/chooseLeader', function (request, response) {
+  mod.RandomSolutionWord()
+  solutionWord = mod.getSolutionWord()
+  console.log(solutionWord)
+  response.sendFile(path.join(__dirname, 'Views', 'chooseLeader.html'))
 })
 
 app.get('/multiPlayer', function (request, response) {
@@ -258,6 +268,48 @@ app.post('/api/logAction', (req, res) => {
 app.get('/log', function (request, response) {
   response.sendFile(path.join(__dirname, 'Views', 'log.html'))
 })
+
+
+// Backend will be able to receive information from frontend
+app.use(express.urlencoded({ extended: true }));
+
+ //Enable CORS
+ //set a header for every request that comes through
+app.use((req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    next();
+});
+
+
+ 
+app.get("/vote", async (req, res) => {
+    let data = JSON.parse(await fs.readFile(optionsFile, "utf-8"));
+    const totalVotes = Object.values(data).reduce((total, positions) => total += positions, 0);
+
+    data = Object.entries(data).map(([label, votes]) => {
+        return {
+            label,
+            percentage: (((100 * votes) / totalVotes) || 0).toFixed(0)// gives us a percentage that will return a zero if no vote casted
+        }
+    });
+
+
+    res.json(data);
+    
+});
+
+
+
+app.post("/vote", async (req, res) => {
+    const data = JSON.parse(await fs.readFile(optionsFile, "utf-8"));
+
+    data[req.body.add]++; //adds to the vote the user chose
+
+    await fs.writeFile(optionsFile, JSON.stringify(data));
+
+    res.end();
+});
+
 
 const port = process.env.PORT || 3000
 server.listen(port)
