@@ -130,9 +130,10 @@ app.post('/api/chooseWord', (req, res) => {
   solutionWord = req.body.Word
   setSolutionWord(solutionWord)
   console.log(solutionWord)
+  res.redirect('/multiPlayer')
 })
 
-  res.redirect('/multiPlayer')
+ 
 app.post('/api/logout-user', (req, res) => {
   wordleAccountManager.LogoutUser(req, res)
   log.logSignOut(req)
