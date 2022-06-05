@@ -88,6 +88,15 @@ socket.on('joinGame', (payLoad) => {
   }
 })
 
+// Client leaving the lobby
+const LeaveLobbybutton = document.getElementById('LeaveLobby')
+LeaveLobbybutton.addEventListener('click', clickLeaveLobby)
+
+function clickLeaveLobby() {
+  socket.emit('LeaveTheLobby')
+  location = String(location).replace("multiPlayer", "modeoption")
+}
+
 // Client Receieve Game State With GuessedWord Evaluation
 socket.on('Results', (game) => {
   MatchingIndex = game[gameId].gameState.MatchingIndex

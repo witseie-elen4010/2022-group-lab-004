@@ -25,6 +25,7 @@ const lobbyRoute = require('./Routes/lobbyRoute')
 const loginRoute = require('./Routes/loginRoute')
 
 const { makeid } = require('./utils')
+const req = require('express/lib/request')
 
 let solutionWord
 
@@ -61,10 +62,16 @@ solutionWord = mod.getSolutionWord()
 console.log(solutionWord)
 
 app.get('/singleplayer', function (request, response) {
-  mod.RandomSolutionWord()
-  solutionWord = mod.getSolutionWord()
-  console.log(solutionWord)
-  response.sendFile(path.join(__dirname, 'Views', 'singleplayer.html'))
+  if (request.session.user === undefined || request.session.user === null) {
+    const message = 'Please Login'
+    response.render('Error.ejs',
+      { error: 'User not authenticated', message: message, tips: [], buttonlink: '/login', button: 'Login' })
+  } else {
+    mod.RandomSolutionWord()
+    solutionWord = mod.getSolutionWord()
+    console.log(solutionWord)
+    response.sendFile(path.join(__dirname, 'Views', 'singleplayer.html'))
+  }
 })
 
 app.get('/multiPlayer', function (request, response) {
@@ -99,7 +106,7 @@ app.post('/api/login-user', (req, res) => {
 })
 
 app.post('/api/logout-user', (req, res) => {
-  wordleAccountManager.LogoutUser(req.body, req, res)
+  wordleAccountManager.LogoutUser(req, res)
   log.logSignOut(req)
 })
 
@@ -128,7 +135,13 @@ app.post('/api/endGame', (req, res) => {
 })
 
 app.get('/result', function (request, response) {
-  response.sendFile(path.join(__dirname, 'Views', 'result.html'))
+  if (request.session.user === undefined || request.session.user === null) {
+    const message = 'Please Login'
+    response.render('Error.ejs',
+      { error: 'User not authenticated', message: message, tips: [], buttonlink: '/login', button: 'Login' })
+  } else {
+    response.sendFile(path.join(__dirname, 'Views', 'result.html'))
+  }
 })
 
 io.on('connection', player => {
@@ -144,6 +157,16 @@ io.on('connection', player => {
   player.on('createNewGame', hostCreateNewGame)
   player.on('joinGame', PlayerJoinsGame)
   player.on('Evaluate', ClientGuessedWord)
+
+  player.on('LeaveTheLobby', playerLeavesTheLobby)
+
+  function playerLeavesTheLobby () {
+  
+    player.disconnect()
+    console.log('Client With ID: ' + player.id + ' disconnected')
+    
+  }
+  
 
   function PlayerJoinsGame (JoinDetails) {
     const clientID = JoinDetails.clientID
@@ -237,7 +260,13 @@ app.post('/api/endGameMulti', (req, res) => {
 })
 
 app.get('/resultMulti', function (request, response) {
-  response.sendFile(path.join(__dirname, 'Views', 'resultMulti.html'))
+  if (request.session.user === undefined || request.session.user === null) {
+    const message = 'Please Login'
+    response.render('Error.ejs',
+      { error: 'User not authenticated', message: message, tips: [], buttonlink: '/login', button: 'Login' })
+  } else {
+    response.sendFile(path.join(__dirname, 'Views', 'resultMulti.html'))
+  }
 })
 
 app.post('/api/logAction', (req, res) => {
@@ -269,7 +298,13 @@ app.post('/api/logAction', (req, res) => {
 })
 
 app.get('/log', function (request, response) {
-  response.sendFile(path.join(__dirname, 'Views', 'log.html'))
+  if (request.session.user === undefined || request.session.user === null) {
+    const message = 'Please Login'
+    response.render('Error.ejs',
+      { error: 'User not authenticated', message: message, tips: [], buttonlink: '/login', button: 'Login' })
+  } else {
+    response.sendFile(path.join(__dirname, 'Views', 'log.html'))
+  }
 })
 
 const port = process.env.PORT || 3000
