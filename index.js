@@ -127,11 +127,21 @@ app.get('/result', function (request, response) {
 })
 
 io.on('connection', player => {
-  console.log('We have a new client:' + player.id)
+  console.log('We have a new client: ' + player.id)
   io.sockets.emit('clientID', player.id)
   player.on('createNewGame', hostCreateNewGame)
   player.on('joinGame', PlayerJoinsGame)
   player.on('Evaluate', ClientGuessedWord)
+
+  player.on('LeaveTheLobby', playerLeavesTheLobby)
+
+  function playerLeavesTheLobby () {
+  
+    player.disconnect()
+    console.log('Client With ID: ' + player.id + ' disconnected')
+    
+  }
+  
 
   function PlayerJoinsGame (JoinDetails) {
     const clientID = JoinDetails.clientID
