@@ -51,17 +51,40 @@
  /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
  .BoxGrid-container-Right {
     width: 320px;
-    margin-bottom: 25%;
+    margin-bottom: 5%;
     margin-top: 5%
    }
 
 .BoxGrid-container-Right div{
     display: flex;
+    margin-left: 40%;
 }
 
 .BoxGrid-container-Right .box {
-    width: 45px;
-     height: 45px;
+    width: 20px;
+     height: 20px;
+    border: 2px solid #3a3a3c;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 2px;
+}
+
+.BoxGrid-container-Right2 {
+    width: 320px;
+    margin-bottom: 10%;
+    margin-top: 5%
+   }
+
+.BoxGrid-container-Right2 div{
+    display: flex;
+    margin-left: 40%;
+}
+
+.BoxGrid-container-Right2 .box {
+    width: 20px;
+     height: 20px;
     border: 2px solid #3a3a3c;
     box-sizing: border-box;
     display: flex;

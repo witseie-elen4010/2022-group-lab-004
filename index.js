@@ -35,17 +35,22 @@ app.set('views', './Views')
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
+const sessionMiddleware = session({
+  secret: 'Wordle cookie',
+
+  cookie: {},
+
+  resave: false,
+  saveUnitialized: true
+
+})
+
 app.use(
-  session({
-    secret: 'Wordle cookie',
-
-    cookie: {},
-
-    resave: false,
-    saveUnitialized: true
-
-  })
+  sessionMiddleware
 )
+
+const wrap = middleware => (socket, next) => middleware(socket.request, {}, next)
+io.use(wrap(sessionMiddleware))
 app.use('/cdn', express.static('Public'))
 app.use('/', homeRoute)
 app.use('/', modeRoute)
@@ -140,8 +145,15 @@ app.get('/result', function (request, response) {
 })
 
 io.on('connection', player => {
-  console.log('We have a new client: ' + player.id)
-  io.sockets.emit('clientID', player.id)
+  const user = player.request.session.user
+
+  const User = {
+    user,
+    playerID: player.id
+  }
+
+  console.log('We have a new client:' + player.id)
+  io.sockets.emit('clientID', User)
   player.on('createNewGame', hostCreateNewGame)
   player.on('joinGame', PlayerJoinsGame)
   player.on('Evaluate', ClientGuessedWord)
@@ -159,6 +171,7 @@ io.on('connection', player => {
   function PlayerJoinsGame (JoinDetails) {
     const clientID = JoinDetails.clientID
     const lobbyroomID = JoinDetails.gameID
+    const clientName = JoinDetails.ClientName
 
     if (lobbyRooms[lobbyroomID] === undefined) {
       io.to(clientID).emit('InvalidRoom', lobbyroomID)
@@ -179,16 +192,16 @@ io.on('connection', player => {
     })
     */
     console.log(lobbyRooms[lobbyroomID].clients.length)
-    if (lobbyRooms[lobbyroomID].clients.length === 2) {
+    if (lobbyRooms[lobbyroomID].clients.length === 3) {
       io.to(clientID).emit('GameFull')
       return
     } else {
       lobbyRooms[lobbyroomID].clients.push({
-        clientID
+        clientID,
+        clientName
       })
     }
 
-    console.log(lobbyRooms[lobbyroomID].clients.length)
     lobbyRooms[lobbyroomID].clients.forEach(client => {
       io.to(client.clientID).emit('joinGame', lobbyRooms)
     })

@@ -4,7 +4,8 @@ const socket = io('/')
 
 let Id
 let gameId
-let OpponentClientID
+let username
+const OpponentClientID = []
 
 // Getting Lobby Front Page Elements
 const Newgamebutton = document.getElementById('createNewGame')
@@ -15,8 +16,10 @@ const Joinbutton = document.getElementById('JoinGame')
 // Server response For Client Connection.
 socket.on('clientID', function (data) {
   if (Id === undefined) {
-    Id = data
+    Id = data.playerID
+    username = data.user
     console.log(Id)
+    console.log(username)
   }
 })
 
@@ -58,25 +61,30 @@ function clickJoinGame () {
   }
   const JoinDetails = {
     clientID: Id,
-    gameID: gameId
+    gameID: gameId,
+    ClientName: username
   }
   socket.emit('joinGame', JoinDetails)
 }
 
 // Joined Game state is Received by the Client
 socket.on('joinGame', (payLoad) => {
-  console.log(payLoad[gameId].clients)
-  payLoad[gameId].clients.forEach(function (client) {
-    if (client.clientID !== Id) {
-      OpponentClientID = client.clientID
-      console.log('Opponent ID: ' + OpponentClientID)
-    }
-  })
+  if (payLoad[gameId].clients.length === 3) {
+    payLoad[gameId].clients.forEach(function (client) {
+      if (client.clientID !== Id) {
+        OpponentClientID.push(client)
+        console.log('Opponent ID: ' + OpponentClientID)
+      }
+    })
 
-  if (payLoad[gameId].clients.length >= 2) {
+    document.getElementById('CurrentPlayer').innerHTML = `You ( ${username} )`
+    document.getElementById('Opponent1').innerHTML = `${OpponentClientID[0].clientName}`
+    document.getElementById('Opponent2').innerHTML = `${OpponentClientID[1].clientName}`
+  }
+  if (payLoad[gameId].clients.length === 3) {
     init()
   } else {
-    window.alert('Waiting For The Other Player')
+    window.alert('Waiting For The Other Player(s)')
   }
 })
 
@@ -95,20 +103,21 @@ socket.on('Results', (game) => {
   IncludedIndex = game[gameId].gameState.IncludedIndex
 
   const Opponent = {
-    clientID: OpponentClientID
+    clientID1: OpponentClientID[0].clientID,
+    clientID2: OpponentClientID[1].clientID
   }
-
   if (game[gameId].gameState.clientID === Id) {
     console.log('This is True')
     // Update Game And Color Player Board and Key Board
     changeBox(JSON.stringify(game[gameId].gameState.guessedWord))
     UpdateGamePlay()
-  } else if (game[gameId].clients.some(function (u) {
-    if (u.clientID === Opponent.clientID) { return true }
-    return false
-  })) {
-    // Color The Opponent Board
-    ColorOpponentBoard()
+  } else {
+    if (game[gameId].gameState.clientID === Opponent.clientID1) {
+      ColorOpponentBoard()
+    }
+    if (game[gameId].gameState.clientID === Opponent.clientID2) {
+      SecondColorOpponentBoard()
+    }
   }
 })
 
@@ -138,6 +147,7 @@ const boxGrid = [
 ]
 
 let OpponentcurrentRow = 0
+let SecondOpponentcurrentRow = 0
 let currentGridRow = 0
 let currentBox = 0
 let isGameOver = false
@@ -155,7 +165,7 @@ boxGrid.forEach((gridRow, gridRowIndex) => {
 })
 /// //////////////////////////////////////////////////////////////////////////////////////////////
 
-// Opponent Grid
+// First Opponent Grid
 
 const OpponenttileDisplay = document.querySelector('.BoxGrid-container-Right')
 
@@ -180,6 +190,32 @@ OpponentguessRows.forEach((opponentguessRow, guessRowIndex) => {
   })
   OpponenttileDisplay.appendChild(rowElement)
 })
+
+// Second Opponent Grid
+const SecondOpponenttileDisplay = document.querySelector('.BoxGrid-container-Right2')
+
+const SecondOpponentguessRows = [
+  ['', '', '', '', ''],
+  ['', '', '', '', ''],
+  ['', '', '', '', ''],
+  ['', '', '', '', ''],
+  ['', '', '', '', ''],
+  ['', '', '', '', '']
+]
+
+SecondOpponentguessRows.forEach((opponentguessRow, guessRowIndex) => {
+  const rowElement = document.createElement('div')
+  rowElement.setAttribute('id', 'SecondOpponentguessRow-' + guessRowIndex)
+
+  opponentguessRow.forEach((guess, guessIndex) => {
+    const tileElement = document.createElement('div')
+    tileElement.setAttribute('id', 'SecondOpponentguessRow-' + guessRowIndex + '-box-' + guessIndex)
+    tileElement.classList.add('box')
+    rowElement.append(tileElement)
+  })
+  SecondOpponenttileDisplay.appendChild(rowElement)
+})
+
 /// //////////////////////////////////////////////////////////////////////////////////////////////
 // Adds letter to the player's grid
 /// //////////////////////////////////////////////////////////////////////////////////////////////
@@ -469,6 +505,23 @@ const ColorOpponentBoard = () => {
   })
   if (OpponentcurrentRow < 5) {
     OpponentcurrentRow++
+  }
+}
+
+// Color Second Opponent Board
+const SecondColorOpponentBoard = () => {
+  const rowTiles = document.querySelector('#SecondOpponentguessRow-' + SecondOpponentcurrentRow).childNodes
+  rowTiles.forEach((tile, index) => {
+    if (MatchingIndex[index]) {
+      tile.classList.add('greenColour')
+    } else if (IncludedIndex[index]) {
+      tile.classList.add('yellowColour')
+    } else {
+      tile.classList.add('greyColour')
+    }
+  })
+  if (SecondOpponentcurrentRow < 5) {
+    SecondOpponentcurrentRow++
   }
 }
 
