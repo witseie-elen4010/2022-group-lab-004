@@ -23,13 +23,18 @@ const log = require('./Backend/logActions')
 const mod = require('./WordList.js')
 const lobbyRoute = require('./Routes/lobbyRoute')
 const loginRoute = require('./Routes/loginRoute')
+//const loginRoute1 = require('./Routes/login1Route')
+const chooseWordRoute = require('./Routes/chooseWordRoute')
 
 const fs = require("fs").promises;// interacts with json
 const optionsFile = path.join(__dirname, "options.json");
 
 const { makeid } = require('./utils')
+const { setSolutionWord } = require('./WordList.js')
 
 let solutionWord
+
+
 
 app.set('view engine', 'ejs')
 app.set('views', './Views')
@@ -53,28 +58,35 @@ app.use('/', homeRoute)
 app.use('/', modeRoute)
 app.use('/', lobbyRoute)
 app.use('/', loginRoute)
+//app.use('/', loginRoute1)
+app.use('/', chooseWordRoute)
 
-mod.RandomSolutionWord()
-solutionWord = mod.getSolutionWord()
-console.log(solutionWord)
+
 
 app.get('/singleplayer', function (request, response) {
   mod.RandomSolutionWord()
-  solutionWord = mod.getSolutionWord()
-  console.log(solutionWord)
+solutionWord = mod.getSolutionWord()
+console.log(solutionWord)
   response.sendFile(path.join(__dirname, 'Views', 'singleplayer.html'))
 })
 
 app.get('/chooseLeader', function (request, response) {
-  mod.RandomSolutionWord()
-  solutionWord = mod.getSolutionWord()
-  console.log(solutionWord)
+
   response.sendFile(path.join(__dirname, 'Views', 'chooseLeader.html'))
 })
 
+mod.RandomSolutionWord()
+solutionWord = mod.getSolutionWord()
+console.log(solutionWord)
 app.get('/multiPlayer', function (request, response) {
+
+console.log('this is the:'+solutionWord)
   response.sendFile(path.join(__dirname, 'Views', 'multiPlayer.html'))
+  
 })
+
+
+
 
 app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname, 'Views', 'Register.html'))
@@ -103,10 +115,15 @@ app.post('/api/login-user', (req, res) => {
   log.logSignIn(req)
 })
 
-app.post('/api/logout-user', (req, res) => {
-  wordleAccountManager.LogoutUser(req.body, req, res)
-  log.logSignOut(req)
+app.post('/api/chooseWord', (req, res) => {
+  solutionWord = req.body.Word
+  setSolutionWord(solutionWord)
+  console.log(solutionWord)
+
+  res.redirect('/multiPlayer')
+   
 })
+
 
 app.post('/api/register-user', (req, res) => {
   wordleAccountManager.RegisterUser(req.body, req, res)
@@ -117,6 +134,8 @@ app.post('/api/scoreInit', (req, res) => {
   score.initScore(req)
   res.json('done')
 })
+
+
 
 app.post('/api/scoreGet', (req, res) => {
   score.getScore(req)

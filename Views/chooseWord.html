@@ -3,15 +3,18 @@
 <head>
     <meta charset="utf-8">
     <title>Choose Word</title>
-    <link rel="stylesheet" href="chooseWord.css">
-    <script src ="chooseWord.js"> </script>
+    <link rel="stylesheet" type="text/css" href="/cdn/CSS/chooseWord.css">
+    
 </head>
 
 <body>
-    <form class="box" action="chooseWord.html" method="POST">
+    <form class="box" action="/api/chooseWord" method="POST">
         <h1>Input A 5 Letter Word</h1>
-        <input type="text" name="" placeholder="Enter Username" id="username">
-        <input type="submit" name="" value="Submit Word"  onclick="validate()">
+        <input type="text" name="Word" placeholder="Enter Username" id="username">
+        <div>
+            <button class="ChooseWordBtn" id="send" type="submit">Submit</button>  
+        </div>
     </form>
+    <!---<script type="module" src="/cdn/Script/chooseWord.js"></script>--->
 </body>
 </html>
