@@ -524,8 +524,6 @@ const SecondColorOpponentBoard = () => {
     SecondOpponentcurrentRow++
   }
 }
-
-/// //////////////////////////////////////////////////////////////////////////////////////////////
 const initScoreValue = () => {
   const score = Score.getScore()
   const data = { score }
