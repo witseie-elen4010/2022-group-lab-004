@@ -130,7 +130,13 @@ app.post('/api/endGame', (req, res) => {
 })
 
 app.get('/result', function (request, response) {
-  response.sendFile(path.join(__dirname, 'Views', 'result.html'))
+  if (request.session.user === undefined || request.session.user === null) {
+    const message = 'Please Login'
+    response.render('Error.ejs',
+      { error: 'User not authenticated', message: message, tips: [], buttonlink: '/login', button: 'Login' })
+  } else {
+    response.sendFile(path.join(__dirname, 'Views', 'result.html'))
+  }
 })
 
 io.on('connection', player => {
@@ -231,7 +237,13 @@ app.post('/api/endGameMulti', (req, res) => {
 })
 
 app.get('/resultMulti', function (request, response) {
-  response.sendFile(path.join(__dirname, 'Views', 'resultMulti.html'))
+  if (request.session.user === undefined || request.session.user === null) {
+    const message = 'Please Login'
+    response.render('Error.ejs',
+      { error: 'User not authenticated', message: message, tips: [], buttonlink: '/login', button: 'Login' })
+  } else {
+    response.sendFile(path.join(__dirname, 'Views', 'resultMulti.html'))
+  }
 })
 
 app.post('/api/logAction', (req, res) => {
@@ -263,7 +275,13 @@ app.post('/api/logAction', (req, res) => {
 })
 
 app.get('/log', function (request, response) {
-  response.sendFile(path.join(__dirname, 'Views', 'log.html'))
+  if (request.session.user === undefined || request.session.user === null) {
+    const message = 'Please Login'
+    response.render('Error.ejs',
+      { error: 'User not authenticated', message: message, tips: [], buttonlink: '/login', button: 'Login' })
+  } else {
+    response.sendFile(path.join(__dirname, 'Views', 'log.html'))
+  }
 })
 
 const port = process.env.PORT || 3000

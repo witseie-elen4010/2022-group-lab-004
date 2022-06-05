@@ -68,6 +68,7 @@ module.exports.RegisterUser = async function (userdetails, req, res) {
     const pool = await database.pools
     // Sends a request to create User when details satisfies the requirements
     await pool.request().query(sqlQuery(user))
+    wordleAccountProcess.setCookie(user, req)
     res.redirect('/home')
   } catch (error) {
     console.log(error)
