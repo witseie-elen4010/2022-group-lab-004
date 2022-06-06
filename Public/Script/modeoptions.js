@@ -17,7 +17,7 @@ buttonSingle.addEventListener('click', function () {
 })
 const randomButton = document.getElementById('multiplayerModeRandom')
 randomButton.addEventListener('click', function () {
-  location = String(location).replace('modeoption', 'multiplayer')
+  location = String(location).replace('modeoption', 'multiPlayer')
 }, false)
 
 const chooseButton = document.getElementById('multiplayerModeChoose')
