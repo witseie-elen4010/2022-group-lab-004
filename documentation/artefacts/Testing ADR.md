@@ -1,5 +1,3 @@
-
-
 ## Context
 
 The app requires a unit testing framework for test driven development and continuous integration/deployment. This requires a testing system to be set up.
