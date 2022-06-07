@@ -4,7 +4,11 @@ const path = require('path')
 const router = express.Router()
 
 router.get('/login', function (req, res) {
-  res.sendFile(path.join(__dirname, '../Views', 'login.html'))
+  if (req.session.user) {
+    res.redirect('./home')
+  } else {
+    res.sendFile(path.join(__dirname, '../Views', 'login.html'))
+  }
 })
 
 module.exports = router
