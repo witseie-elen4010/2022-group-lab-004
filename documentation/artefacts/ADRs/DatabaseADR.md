@@ -12,27 +12,27 @@ Database design will be as follows:
  
 User Table
  
-|  Details                 |  Variable Type   |                     |
-| -----------              | ---------------- |                     |
+|  Details                 |  Variable Type   | Constraints         |
+| -----------              | ---------------- | ------------------- |
 |  Username (Primary key)  |       Char       | not null and unique |
 |   Email                  |       Char       | not null and unique |
-|   Password               |       Char       | not null and unique |
+|   Password               |       Char       | not null            |
 
 Score Table
 
-| Details   | Variable Type  |
-| --------- | -------------- |
-|    ID     |      Char      | 
-|    Score  |       Int      |
+| Details   | Variable Type  | Constraints |
+| --------- | -------------- | ----------- |
+|    ID     |      Char      | not null    |
+|    Score  |       Int      | not null    |
 
 Log Table
 
-| Details                | Variable Type    |
-| --------               | ---------------- |
-| Date and Time          |      Char        |
-| Nature of action       |      Char        |
-| Player Id              |      Char        |
-| Unix Time              |      Int         |
+| Details                | Variable Type    | Constraints |
+| --------               | ---------------- | ----------- |
+| Date and Time          |      Char        | not null    |
+| Nature of action       |      Char        | not null    |
+| Player Id              |      Char        | not null    |
+| Unix Time              |      Int         | not null    |
 
 Database credentials will be stored as environmental variables and be accessed on a repo using 'process.env.AzureDBAdmin' and 'process.env.AzureDBPassword' for
 the username and password respectively.
