@@ -1,4 +1,4 @@
-# ADR 2: Testing using Jest
+
 
 ## Context
 
